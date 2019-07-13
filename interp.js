@@ -200,23 +200,22 @@ function query ( ua, imp ) { //is there [a|an].../do you have [a|an]...
 }
 function read( ua ) { // read ...
     var response = felicity[0] + ", "+ reply[ 0 ] +" "+ ua.join( " " );
+    var findMe = "";
     var fromIndex = ua.indexOf( "from" );
-    if (fromIndex > -1) {
+    if (fromIndex > -1) { // we've to find something
         for (i=0; i <= fromIndex; i++) ua.shift();
-        var findMe = ua.join( " " );
-        response = "";
-        var elems = document.getElementsByTagName( "p" );
-        for (elem of elems)
-            response += elem.innerText.toLowerCase() +". ";
+        findMe = ua.join( " " ).toLowerCase();
+    }
+    response = "";
+    var elems = document.getElementsByTagName( "*" );
+    for (elem of elems)
+        if (elem.tagName == "P" || (elem.tagName.startsWith( "H" )) && elem.tagName.length == 2)
+            response += elem.innerText.toLowerCase() +" ; ; ;  \n";
+    if (findMe != "") {
         fromIndex = response.indexOf( findMe );
         response = fromIndex == -1 ?
-            felicity[ 0 ] +", "+ "i can't find this passage" :
+            felicity[ 0 ] +", "+ "i can't find the passage beginning with "+ findMe :
             response.substr( fromIndex );
-    } else if (-1 != ua.indexOf( "page" )) {
-        response = "";
-        var elems = document.getElementsByTagName( "p" );
-        for (elem of elems)
-            response += elem.innerText +".\n";
     }
     return response; 
 }
