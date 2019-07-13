@@ -35,7 +35,7 @@ function clickOn( ua ) { // click on X
 		        links   = document.getElementsByTagName( "a" );
 		    }
 		    if (ua.length == 0) 
-		    	return felicity[0] + ", "+ reply[ 0 ] +": click on the "+ elemType;
+		    	return felicity[0] + ", "+ reply[ 0 ] +": click on "+ the + elemType;
 		    else {
 			    var name = ua.join( " " ).toLowerCase();
 			    var clickable;
@@ -50,8 +50,6 @@ function clickOn( ua ) { // click on X
                          clickable.title.trim().toLowerCase().includes( name )) 
                      || (clickable.value != undefined &&
                          clickable.value.trim().toLowerCase().includes( name ))
-                     || (clickable.innerHTML != undefined &&
-                         clickable.innerHTML.trim().toLowerCase().includes( name ))
                      || (clickable.innerText != undefined &&
                          clickable.innerText.trim().toLowerCase().includes( name ))
                      || (clickable.tagName == "INPUT"   && // need to check this too(!)
@@ -178,10 +176,10 @@ function query ( ua, imp ) { //is there [a|an].../do you have [a|an]...
          || ((el.tagName == "BUTTON" ||
              (el.tagName == "INPUT" && el.type == "button"))
              && type == "button" &&
-				 (el.innerHTML.toLowerCase().trim().includes( str )))
+				 (el.innerText.toLowerCase().trim().includes( str )))
          || (el.tagName == "INPUT" && el.type == "text"
              && type == "value" &&
-                 (el.innerHTML.toLowerCase().trim().includes( str )))
+                 (el.innerText.toLowerCase().trim().includes( str )))
 				 )
 			return felicity[ 2 ] + " , "
 					+ (imp ? "there is " : "I have ")
@@ -189,7 +187,7 @@ function query ( ua, imp ) { //is there [a|an].../do you have [a|an]...
         else if (((el.tagName == "BUTTON" ||
                   (el.tagName == "INPUT" && el.type == "button"))
                   && type == "link" &&
-					(el.innerHTML.toLowerCase().trim().includes( str )))
+					(el.innerText.toLowerCase().trim().includes( str )))
 			 ||  (el.tagName == "A" && type == "button" &&
 					(el.title.toLowerCase().trim().includes( str ) ||
 					 el.innerText.toLowerCase().trim().includes( str ))))
@@ -234,43 +232,37 @@ function hidden( elem ) {
 }
 function howMany( ua ) { // how many X [are there [on this page]]
     var name = ua[ 2 ];
-    var e, elems;
+    var e, elems = null;
     var number = 0;
     switch (name) {
-        case "paragraphs" :
-            elems = document.getElementsByTagName( "p" );
-            for (e of elems)
-                if (!hidden( e ))
-                    number++;
-            break;
-        case "headings"   :
-            elems = document.getElementsByTagName( "h*" );
-            for (e of elems)
-                if (!hidden( e ))
-                    number++;
-            break;
-        case "values"     :
-            elems = document.getElementsByTagName( "input" );
-            for (e of elems)
-                if (e.type == "text" || e.type == "textarea")
-                    if (!hidden( e ))
-                        number++;
-            break;
-        case "buttons"     :
-            elems = document.getElementsByTagName( "*" );
-            for (e of elems)
-                if (e.tagName == "BUTTON" ||
-                   (e.tagName == "INPUT" && e.type == "button"))
-                    if (!hidden( e ))
-                        number++;
-            break;
-        case "links"       :
-            elems = document.getElementsByTagName( "a" );
-            for (e of elems)
-                if (!hidden( e ))
-                    number++;
-            break;
+        case "paragraphs" : elems = document.getElementsByTagName( "p" );     break;
+        case "headings"   : elems = document.getElementsByTagName( "h*" );    break;
+        case "values"     : elems = document.getElementsByTagName( "input" ); break;
+        case "buttons"    : elems = document.getElementsByTagName( "*" );     break;
+        case "links"      : elems = document.getElementsByTagName( "a" );     break;
+        case "figures"    : elems = document.getElementsByTagName( "figure" );break;
     }
+    if (elems != null) 
+        switch (name) {
+            case "values"     :
+                for (e of elems)
+                    if (e.type == "text" || e.type == "textarea")
+                        if (!hidden( e ))
+                            number++;
+                break;
+            case "buttons"     :
+                for (e of elems)
+                    if (e.tagName == "BUTTON" ||
+                    (e.tagName == "INPUT" && e.type == "button"))
+                        if (!hidden( e ))
+                            number++;
+                break;
+            default       :
+                for (e of elems)
+                    if (!hidden( e ))
+                        number++;
+                break;
+        }
     return number == 0 ? 
         felicity[ 0 ]+ ", there are no "+ name
         : felicity[ 1 ]+ ", there are "+ number +" "+ name;
@@ -287,6 +279,7 @@ function whatNames( ua ) { // what .. [buttons|links|values] ..
              if (-1 != ua.indexOf( "buttons" )) type = "button";
         else if (-1 != ua.indexOf(  "values" )) type =  "value";
         else if (-1 != ua.indexOf(   "links" )) type =   "link";
+        else if (-1 != ua.indexOf( "figures" )) type = "figure";
         
         var widgets = [];
         var elems;
@@ -296,7 +289,7 @@ function whatNames( ua ) { // what .. [buttons|links|values] ..
                 for (el of elems)
                     if (el.tagName == "BUTTON") {
                         if (!hidden( el ))
-                            widgets.push( articled( el.innerHTML.toLowerCase().trim()) +" "+type );
+                            widgets.push( articled( el.innerText.toLowerCase().trim()) +" "+type );
                     } else if (el.tagName == "INPUT" && el.type == "button"){
                         if (!hidden( el ))
                             widgets.push( articled( el.title.toLowerCase().trim()) +" "+type );
@@ -315,15 +308,25 @@ function whatNames( ua ) { // what .. [buttons|links|values] ..
                             felicity[ 0 ] +", "+ "there are no values."
                             : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
                 break;
+            case "figure":
+                elems = document.getElementsByTagName( "figcaption" );
+                for (el of elems)
+                    if (!hidden( el ))
+                        widgets.push( articled( el.innerText.toLowerCase().trim()) );
+                response = widgets.length == 0 ?
+                            felicity[ 0 ] +", "+ "there are no figures."
+                            : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
+                break;
             case "link":
                 elems = document.getElementsByTagName( "a" );
                 for (el of elems)
-                    if (!hidden( el ))
-                        widgets.push(
-                            articled( el.hasAttribute( "title" ) ?
+                    if (!hidden( el )) {
+                        var name = el.hasAttribute( "title" ) ?
                                 el.getAttribute( "title" ) :
-                                el.innerText.toLowerCase().trim()
-                            ) +" "+type );
+                                el.innerText.toLowerCase().trim();
+                        if (name != "")
+                            widgets.push( articled( name ) +" "+type );
+                    }
                 response = widgets.length == 0 ?
                                 felicity[ 0 ] +", "+ "there are no links."
                                 : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
