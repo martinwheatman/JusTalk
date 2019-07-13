@@ -34,7 +34,7 @@ function clickOn( ua ) { // click on X
 		        inputBt = document.getElementsByTagName( "input" );
 		        links   = document.getElementsByTagName( "a" );
 		    }
-		    if (ua.length == 0) 
+		    if (ua.length == 0)
 		    	return felicity[0] + ", "+ reply[ 0 ] +": click on "+ the + elemType;
 		    else {
 			    var name = ua.join( " " ).toLowerCase();
@@ -252,14 +252,16 @@ function howMany( ua ) { // how many X [are there [on this page]]
                 break;
             case "buttons"     :
                 for (e of elems)
-                    if (e.tagName == "BUTTON" ||
-                    (e.tagName == "INPUT" && e.type == "button"))
+                    if ( e.tagName == "BUTTON" ||
+                        (e.tagName == "INPUT" && e.type == "button"))
                         if (!hidden( e ))
                             number++;
                 break;
             default       :
                 for (e of elems)
-                    if (!hidden( e ))
+                    if (!hidden( e ) &&
+                        ( e.innerText.trim() != "" ||
+                         (e.title != null && e.title != "")))
                         number++;
                 break;
         }
