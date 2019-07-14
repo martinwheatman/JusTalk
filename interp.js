@@ -198,19 +198,33 @@ function query ( ua, imp ) { //is there [a|an].../do you have [a|an]...
 				:  (imp ? "there is not " : "I don't have ")
 					+ article +" "+ str +" "+ type );
 }
-function read( ua ) { // read ...
+function read( ua ) { // read .../read from/read from main heading
     var response = felicity[0] + ", "+ reply[ 0 ] +" "+ ua.join( " " );
+
+    //do we have to read from something
+    var readPHn = true;
     var findMe = "";
     var fromIndex = ua.indexOf( "from" );
     if (fromIndex > -1) { // we've to find something
         for (i=0; i <= fromIndex; i++) ua.shift();
         findMe = ua.join( " " ).toLowerCase();
-    }
+        if (findMe == "main heading") {
+            findMe = "";
+            readPHn = false;
+    }   }
+
+    // gather text - headings and paragraphs
     response = "";
     var elems = document.getElementsByTagName( "*" );
     for (elem of elems)
-        if (elem.tagName == "P" || (elem.tagName.startsWith( "H" )) && elem.tagName.length == 2)
-            response += elem.innerText.toLowerCase() +" ; ; ;  \n";
+        if ((readPHn && ( elem.tagName == "P" ||
+                         (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2)))
+         || elem.tagName == "H1")
+        {   response += elem.innerText.toLowerCase() +" ; ; ;  \n";
+            readPHn = true;
+        }
+
+    // jump to a point in the text if required
     if (findMe != "") {
         fromIndex = response.indexOf( findMe );
         response = fromIndex == -1 ?
