@@ -1,4 +1,4 @@
-var felicity = [ "sorry", "okay", "yes", "no" ];
+var felicity = [ "sorry", "ok", "yes", "no" ];
 var reply = [ "i don't understand", "i don't know" ];
 var clickMe = null;
 function clickClickMe() {
@@ -6,38 +6,38 @@ function clickClickMe() {
 		clickMe.click()
 		clickMe = null;
 }	}
-function clickOn( ua ) { // click on X
-	if (ua.length == 0)
+function clickOn( cmd ) { // click on X
+	if (cmd.length == 0)
 		return felicity[0] + ", "+ reply[ 0 ] +": click on ";
 	else {
-	    var errMsg = ua.join( " " );
+	    var errMsg = cmd.join( " " );
 	    var      the = "";
-	    if (ua[ 0 ] == "the") {
+	    if (cmd[ 0 ] == "the") {
 	        the = "the ";
-	        ua.shift();
+	        cmd.shift();
 	    }
-	    if (ua.length == 0)
+	    if (cmd.length == 0)
 	    	return felicity[0] + ", "+ reply[ 0 ] +": click on the";
 	    else {
 		    var buttons = null, links = null, inputBt = null;
-		    var elemType = ua[ ua.length -1 ];
+		    var elemType = cmd[ cmd.length -1 ];
 		    if (elemType == "link") {
 		        links = document.getElementsByTagName( "a" );
-		        ua.pop();
+		        cmd.pop();
 		    } else if (elemType == "button" ) {
 		        buttons = document.getElementsByTagName( "button" );
 		        inputBt = document.getElementsByTagName( "input" );
-		        ua.pop();
+		        cmd.pop();
 		    } else {
 		        elemType = "";
 		        buttons = document.getElementsByTagName( "button" );
 		        inputBt = document.getElementsByTagName( "input" );
 		        links   = document.getElementsByTagName( "a" );
 		    }
-		    if (ua.length == 0)
+		    if (cmd.length == 0)
 		    	return felicity[0] + ", "+ reply[ 0 ] +": click on "+ the + elemType;
 		    else {
-			    var name = ua.join( " " ).toLowerCase();
+			    var name = cmd.join( " " ).toLowerCase();
 			    var clickable;
 			    var clickables = [];
 			    if (buttons != null) for (i=0; i<buttons.length; i++) clickables.push( buttons[ i ]);
@@ -62,20 +62,20 @@ function clickOn( ua ) { // click on X
                 }   }
 			    return felicity[0] + ", "+ reply[ 0 ] +": click on "+ errMsg;
 }	}	}	}
-function shift( ua, n ) {
-    for (i=0; i<n; i++) ua.shift();
-    return ua;
+function shift( cmd, n ) {
+    for (i=0; i<n; i++) cmd.shift();
+    return cmd;
 }
-function setValueTo( ua ) { // set the value of X to Y
-    if (ua.length >= 3) {
-    	var name = ua[ 0 ]; ua.shift();
-	    while (ua.length >= 2 && ua[ 0 ] != "to") {
-	        name += " "+ ua[ 0 ];
-	        ua.shift(); // to?
+function setValueTo( cmd ) { // set the value of X to Y
+    if (cmd.length >= 3) {
+    	var name = cmd[ 0 ]; cmd.shift();
+	    while (cmd.length >= 2 && cmd[ 0 ] != "to") {
+	        name += " "+ cmd[ 0 ];
+	        cmd.shift(); // to?
 	    }
-	    if (ua.length > 1) {
-		    ua.shift(); // to
-            var value = ua.join( " " );
+	    if (cmd.length > 1) {
+		    cmd.shift(); // to
+            var value = cmd.join( " " );
             var elements = document.getElementsByTagName( "*" );
             for (el of elements) {
                 if (el.tagName == "INPUT" &&
@@ -87,11 +87,11 @@ function setValueTo( ua ) { // set the value of X to Y
             }    }
             return felicity[ 0 ] +", "+ name +" is not a value";
     }	}
-    return felicity[0] +", "+ reply[ 0 ] +" "+ ua.join(" ");
+    return felicity[0] +", "+ reply[ 0 ] +" "+ cmd.join(" ");
 }
-function getValueOf( ua ) { // get the value of ...
+function getValueOf( cmd ) { // get the value of ...
     var rc = felicity[0] +", "+ reply[ 0 ];
-    var name = ua.join( " " );
+    var name = cmd.join( " " );
     if (name.length > 0) {
     	var elem = document.getElementById( name );
 	    rc = elem == null ?
@@ -101,20 +101,20 @@ function getValueOf( ua ) { // get the value of ...
     }
     return rc;
 }
-function go( ua ) { // go ...
-	var response = felicity[0] +", "+ reply[ 0 ] +": "+ ua;
-	if (ua.length > 0) {
-		if (ua[ 0 ] == "to") {
-			ua.shift();
-			if (ua.length > 0) {
-				address = ua.join("");
+function go( cmd ) { // go ...
+	var response = felicity[0] +", "+ reply[ 0 ] +": "+ cmd;
+	if (cmd.length > 0) {
+		if (cmd[ 0 ] == "to") {
+			cmd.shift();
+			if (cmd.length > 0) {
+				address = cmd.join("");
 				window.location.href="http://" + address.toLowerCase();
 				response = felicity[ 1 ];
 			}
-		} else if (ua[ 0 ] == "back") {
+		} else if (cmd[ 0 ] == "back") {
 			window.history.back();
 			response = felicity[ 1 ] +", gone back";
-		} else if (ua[ 0 ] == "forward") {
+		} else if (cmd[ 0 ] == "forward") {
 			window.history.forward();
 			response = felicity[ 1 ] +", gone forward";
 	}	}
@@ -159,15 +159,15 @@ function describeThePage() {
     return felicity[ 1 ] +", on this page there is "+
                     (response == "" ? "nothing" : response);
 }
-function query ( ua, imp ) { //is there [a|an].../do you have [a|an]...
+function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
 	var response = [];
-	var article = ua[ 0 ]; ua.shift();
-	var type = ua[ ua.length -1 ];
+	var article = cmd[ 0 ]; cmd.shift();
+	var type = cmd[ cmd.length -1 ];
 	if (type == "link" || type == "button" || type == "value")
-		ua.pop();
+		cmd.pop();
 	else
 		type = "value";
-	str = ua.join(" ").toLowerCase();
+	str = cmd.join(" ").toLowerCase();
 	var elements = document.getElementsByTagName( "*" );
 	for (el of elements) if (!hidden( el )) {
 		if ((el.tagName == "A" && type == "link" &&
@@ -198,16 +198,16 @@ function query ( ua, imp ) { //is there [a|an].../do you have [a|an]...
 				:  (imp ? "there is not " : "I don't have ")
 					+ article +" "+ str +" "+ type );
 }
-function read( ua ) { // read .../read from/read from main heading
-    var response = felicity[0] + ", "+ reply[ 0 ] +" "+ ua.join( " " );
+function read( cmd ) { // read .../read from/read from main heading
+    var response = felicity[0] + ", "+ reply[ 0 ] +" "+ cmd.join( " " );
 
     //do we have to read from something
     var readPHn = true;
     var findMe = "";
-    var fromIndex = ua.indexOf( "from" );
+    var fromIndex = cmd.indexOf( "from" );
     if (fromIndex > -1) { // we've to find something
-        for (i=0; i <= fromIndex; i++) ua.shift();
-        findMe = ua.join( " " ).toLowerCase();
+        for (i=0; i <= fromIndex; i++) cmd.shift();
+        findMe = cmd.join( " " ).toLowerCase();
         if (findMe == "main heading") {
             findMe = "";
             readPHn = false;
@@ -233,7 +233,7 @@ function read( ua ) { // read .../read from/read from main heading
     }
     return response; 
 }
-function titleValue( ua ) { // what is the title of this page
+function titleValue( cmd ) { // what is the title of this page
     var elem = document.getElementsByTagName( "title" );
     return elem.length == 0 ?
             felicity[ 0 ] +", "+ reply[ 1 ]
@@ -243,8 +243,8 @@ function hidden( elem ) {
     return elem.hasAttribute( "aria-hidden" ) == true &&
            elem.getAttribute( "aria-hidden" ) == "true";
 }
-function howMany( ua ) { // how many X [are there [on this page]]
-    var name = ua[ 2 ];
+function howMany( cmd ) { // how many X [are there [on this page]]
+    var name = cmd[ 2 ];
     var e, elems = null;
     var number = 0;
     switch (name) {
@@ -282,19 +282,19 @@ function howMany( ua ) { // how many X [are there [on this page]]
         felicity[ 0 ]+ ", there are no "+ name
         : felicity[ 1 ]+ ", there are "+ number +" "+ name;
 }
-function whatNames( ua ) { // what .. [buttons|links|values] ..
+function whatNames( cmd ) { // what .. [buttons|links|values] ..
     var response = felicity[ 0 ] +", "+ reply[ 0 ];
     var x;
-    if (-1 != ua.indexOf("checkboxes"))
+    if (-1 != cmd.indexOf("checkboxes"))
         response = felicity[ 0 ] +", checkboxes are not supported yet";
-    else if (-1 != (x = ua.indexOf("radio")) && x+1 == ua.indexof( "buttons" ))
+    else if (-1 != (x = cmd.indexOf("radio")) && x+1 == cmd.indexof( "buttons" ))
         response = felicity[ 0 ] +", radio buttons are not supported yet";
     else {
         var type = "";
-             if (-1 != ua.indexOf( "buttons" )) type = "button";
-        else if (-1 != ua.indexOf(  "values" )) type =  "value";
-        else if (-1 != ua.indexOf(   "links" )) type =   "link";
-        else if (-1 != ua.indexOf( "figures" )) type = "figure";
+             if (-1 != cmd.indexOf( "buttons" )) type = "button";
+        else if (-1 != cmd.indexOf(  "values" )) type =  "value";
+        else if (-1 != cmd.indexOf(   "links" )) type =   "link";
+        else if (-1 != cmd.indexOf( "figures" )) type = "figure";
         
         var widgets = [];
         var elems;
@@ -359,12 +359,12 @@ function toNumerics( str ) {
         case "for" : return "4";
         default: return str;
 }   }
-function headingValues( ua ) { // what headings are there
+function headingValues( cmd ) { // what headings are there
     var headings = [];
-    var levelIndex = ua.indexOf( "level" );
+    var levelIndex = cmd.indexOf( "level" );
     var level = "1";
-    if (levelIndex != -1 && levelIndex+1 < ua.length-1)
-        level = toNumerics( ua[ levelIndex + 1 ]);
+    if (levelIndex != -1 && levelIndex+1 < cmd.length-1)
+        level = toNumerics( cmd[ levelIndex + 1 ]);
     var elems = document.getElementsByTagName( "h"+ level );
     for (elem of elems)
         if(!hidden( elem ))
@@ -382,7 +382,7 @@ function upto7words( str ) {
     }
     return out.join( " " );
 }
-function paragraphValues( ua ) { // what paragraphs are there
+function paragraphValues( cmd ) { // what paragraphs are there
     var paragraphs = [];
     var body = document.getElementsByTagName( "body" );
     var elems = body[ 0 ].getElementsByTagName( "p" );
@@ -419,77 +419,83 @@ function help() {
 function interp( utterance ) {
     var response = felicity[0] +", "+ reply[ 0 ] +": "+ utterance;
     if (utterance == null) return felicity[0] +", "+ "i didn't catch that";
-    var u = utterance.replace( "and then", "/" );
-    var uas = u.split( "/" );
-    for (i=0; i<uas.length; i++) {
-        response = felicity[0] + ", "+ reply[ 0 ] +" "+ uas[i];
-        uas[i]=uas[i].trim();
-        ua=uas[i].split( " " );
-    
+    var cmds = utterance.split( "and then" );
+
+    for (i=0; i<cmds.length; i++) {
+        
+        cmds[i]=cmds[i].trim();
+        cmd=cmds[i].split( " " );
+        while (cmd.length > 0 && felicity.includes( cmd[ 0 ] )) 
+            cmd.shift();
+        
         // basic interpretation...
-        if (ua[0] == "ok") {
+        if (cmd.length == 0)
             response = "ok";
-        } else if (uas[i] == "hello" ||
-                   uas[i] == "help"  ||
-                   (ua[i] == "what" && -1 != ua.indexOf( "say" ))) {
+        else if (cmds[i] == "hello" ||
+                   cmds[i] == "help"  ||
+                   (cmd[1] == "what" && -1 != cmd.indexOf( "say" )))
             response = help();
-        } else if (ua[i] == "how" &&
-                    -1 != ua.indexOf( "navigate" )) {
+        else if (cmd[ 0 ] == "how" &&
+                    -1 != cmd.indexOf( "navigate" ))
             response = toNavigate( true );
-        } else if (ua[i] == "how" &&
-                    -1 != ua.indexOf( "query" )) {
+        else if (cmd[ 0 ] == "how" &&
+                    -1 != cmd.indexOf( "query" ))
             response = toQuery( true );
-        } else if (ua[i] == "how" &&
-                    -1 != ua.indexOf( "interact" )) {
+        else if (cmd[ 0 ] == "how" &&
+                    -1 != cmd.indexOf( "interact" ))
             response = toInteract( true );
-        } else if (ua[0] == "click" && ua[ 1 ] == "on") {
-            response = clickOn( shift( ua, 2 ));
-        } else if (ua[ 0 ] ==   "set"
-                && ua[ 1 ] ==   "the"
-                && ua[ 2 ] == "value"
-                && ua[ 3 ] ==    "of") {
-            response = setValueTo( shift( ua, 4 ));
-        } else if (ua[ 0 ] ==   "get" 
-                && ua[ 1 ] ==   "the"
-                && ua[ 2 ] == "value"
-                && ua[ 3 ] ==    "of") {
-            response = getValueOf( shift( ua, 4 ));
-        } else if (ua[ 0 ] == "go") {
-            response = go( shift( ua, 1 ));
-		} else if (ua[i] == "describe" &&
-                      -1 != ua.indexOf( "page" )) {
+        else if (cmd[ 0 ] == "click" && cmd[ 1 ] == "on")
+            response = clickOn( shift( cmd, 2 ));
+        else if (cmd[ 0 ] ==   "set"
+                && cmd[ 1 ] ==   "the"
+                && cmd[ 2 ] == "value"
+                && cmd[ 3 ] ==    "of")
+            response = setValueTo( shift( cmd, 4 ));
+        else if (cmd[ 0 ] ==   "get" 
+                && cmd[ 1 ] ==   "the"
+                && cmd[ 2 ] == "value"
+                && cmd[ 3 ] ==    "of")
+            response = getValueOf( shift( cmd, 4 ));
+        else if (cmd[ 0 ] == "go")
+            response = go( shift( cmd, 1 ));
+		else if (cmd[ 0 ] == "describe" &&
+                      -1 != cmd.indexOf( "page" ))
 			response = describeThePage();
-		} else if (ua[ 0 ] == "is" &&
-		           ua[ 1 ] == "there" &&
-	              (ua[ 2 ] == "a" || ua[ 2 ] == "an")) {
-			response = query( shift( ua, 2 ), true );
-		} else if (ua[ 0 ] == "do" &&
-		           ua[ 1 ] == "you" &&
-		           ua[ 2 ] == "have" &&
-		          (ua[ 3 ] == "a" || ua[ 3 ] == "an")) {
-            response = query( shift( ua, 3 ), false );
-        } else if (ua[i] == "what" && 
-              -1 != ua.indexOf( "title" )) {
-        	response = titleValue( ua );
-        } else if (ua[ 0 ] == "what" &&
-              -1 != ua.indexOf( "headings" )) {
-            response = headingValues( ua );
-        } else if (ua[ 0 ] == "what" &&
-              -1 != ua.indexOf( "paragraphs" )) {
-            response = paragraphValues( ua );
-        } else if (ua[ 0 ] == "what") { // values, links and buttons
-            response = whatNames( ua );
-        } else if (ua[ 0 ] == "how" &&
-                   ua[ 1 ] == "many" ) {
-            response = howMany( ua );
-        } else if (ua[ 0 ] == "read") { 
-        	response = read( shift( ua, 1 ));
-		} else if (uas[i] == "keep listening") {
+		else if (cmd[ 0 ] == "is" &&
+		           cmd[ 1 ] == "there" &&
+	              (cmd[ 2 ] == "a" || cmd[ 2 ] == "an"))
+			response = query( shift( cmd, 2 ), true );
+		else if (cmd[ 0 ] == "do" &&
+		           cmd[ 1 ] == "you" &&
+		           cmd[ 2 ] == "have" &&
+		          (cmd[ 3 ] == "a" || cmd[ 3 ] == "an"))
+            response = query( shift( cmd, 3 ), false );
+        else if (cmd[ 0 ] == "what" && 
+              -1 != cmd.indexOf( "title" ))
+        	response = titleValue( cmd );
+        else if (cmd[ 0 ] == "what" &&
+              -1 != cmd.indexOf( "headings" ))
+            response = headingValues( cmd );
+        else if (cmd[ 0 ] == "what" &&
+              -1 != cmd.indexOf( "paragraphs" ))
+            response = paragraphValues( cmd );
+        else if (cmd[ 0 ] == "what") // values, links and buttons
+            response = whatNames( cmd );
+        else if (cmd[ 0 ] == "how" &&
+                   cmd[ 1 ] == "many" )
+            response = howMany( cmd );
+        else if (cmd[ 0 ] == "read")
+        	response = read( shift( cmd, 1 ));
+		else if (cmds[i] == "keep listening")
 			response = felicity[ 0 ] + ", " +"listening mode not supported yet";
-		} else if (uas[i] == "stop listening") {
+		else if (cmds[i] == "stop listening")
 			response = felicity[ 0 ] + ", " +"listening mode not supported yet";
-		} else if (ua[i] == "verbose") {
+		else if (cmds[i] == "verbose")
 			response = felicity[ 0 ] + ", " +"verbosity mode not supported yet";
-	}	}
+	    else
+            response = felicity[0] + ", "+ reply[ 0 ] +" "+ cmds[i];
+
+        if (response.startsWith( felicity[ 0 ] + "," )) break;
+    }
     return response;
 }

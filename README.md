@@ -19,9 +19,12 @@ In many ways is it like SHRDLU,  but interacting with the web rather than a worl
 
 # [so] what commands [are there]
 
-Commands are given as boilerplate verb-phrases, interspersed with noun-phrases 
-So the [keyword search|guesses] currently includes:
+Commands are given as string-literal verb-phrases, interspersed with noun-phrase variables.
+So the keyword search \[guesses-at-meanings] currently include:
 - click on X
+Where X is the 'name' of the button. Following the specification for clickable items, this is either the title, value, innerText or the 'submit' button.  Multiple matches and forms are not supported yet. Neither are radio buttons and checkboxes.
+
+Similarly, the page reader included the commands:
 - read .. from X
 - read .. from main heading
 
