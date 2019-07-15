@@ -39,29 +39,35 @@ function clickOn( cmd ) { // click on X
 		    else {
 			    var name = cmd.join( " " ).toLowerCase();
 			    var clickable;
-			    var clickables = [];
-			    if (buttons != null) for (i=0; i<buttons.length; i++) clickables.push( buttons[ i ]);
-			    if (links   != null) for (i=0; i < links.length; i++) clickables.push(   links[ i ]);
+			    var candidates = [];
+                var clickables = [];
+			    if (buttons != null) for (i=0; i<buttons.length; i++) candidates.push( buttons[ i ]);
+			    if (links   != null) for (i=0; i < links.length; i++) candidates.push(   links[ i ]);
 			    if (inputBt != null) for (i=0; i<inputBt.length; i++)
 			        if (inputBt[ i ].type == "button" || inputBt[ i ].type == "submit")
-			            clickables.push( inputBt[ i ]);
-			    for (clickable of clickables) {
-			        if ((clickable.title != undefined &&
+			            candidates.push( inputBt[ i ]);
+			    for (clickable of candidates)
+			        if ((clickable.title != undefined     &&
                          clickable.title.trim().toLowerCase().includes( name )) 
-                     || (clickable.value != undefined &&
+                     || (clickable.value != undefined     &&
                          clickable.value.trim().toLowerCase().includes( name ))
                      || (clickable.innerText != undefined &&
                          clickable.innerText.trim().toLowerCase().includes( name ))
-                     || (clickable.tagName == "INPUT"   && // need to check this too(!)
-                         clickable.type    != undefined &&
-                         clickable.type    == "submit"  &&
-                         name              == "submit" ))
-                    {   clickMe = clickable;
+                     || (clickable.tagName == "INPUT"     && // need to check this too(!)
+                         clickable.type    != undefined   &&
+                         clickable.type    == "submit"    &&
+                         name              == "submit"     )) clickables.push( clickable );
+                        
+                switch (candidates.length) {
+                    case 0:
+                        return felicity[0] + ", no clickable items match: "+ errMsg;
+                    case 1:
+                        clickMe = clickables[ 0 ];
                         setTimeout( clickClickMe, 1800 );
                         return felicity[1] +", "+ the + name +" "+ elemType +" is clicked";
-                }   }
-			    return felicity[0] + ", "+ reply[ 0 ] +": click on "+ errMsg;
-}	}	}	}
+                    default:
+                        return felicity[0] +", several clickable items match "+ the + name +" "+ elemType;
+}   }	}	}	}
 function shift( cmd, n ) {
     for (i=0; i<n; i++) cmd.shift();
     return cmd;
@@ -428,70 +434,82 @@ function interp( utterance ) {
         while (cmd.length > 0 && felicity.includes( cmd[ 0 ] )) 
             cmd.shift();
         
-        // basic interpretation...
+        // Basic Interpretation...
         if (cmd.length == 0)
             response = "ok";
-        else if (cmds[i] == "hello" ||
-                   cmds[i] == "help"  ||
-                   (cmd[1] == "what" && -1 != cmd.indexOf( "say" )))
-            response = help();
-        else if (cmd[ 0 ] == "how" &&
-                    -1 != cmd.indexOf( "navigate" ))
-            response = toNavigate( true );
-        else if (cmd[ 0 ] == "how" &&
-                    -1 != cmd.indexOf( "query" ))
-            response = toQuery( true );
-        else if (cmd[ 0 ] == "how" &&
-                    -1 != cmd.indexOf( "interact" ))
-            response = toInteract( true );
-        else if (cmd[ 0 ] == "click" && cmd[ 1 ] == "on")
+
+        // Page interaction/navigation
+        else if (cmd[ 0 ] == "click"
+              && cmd[ 1 ] == "on")
             response = clickOn( shift( cmd, 2 ));
         else if (cmd[ 0 ] ==   "set"
-                && cmd[ 1 ] ==   "the"
-                && cmd[ 2 ] == "value"
-                && cmd[ 3 ] ==    "of")
+              && cmd[ 1 ] ==   "the"
+              && cmd[ 2 ] == "value"
+              && cmd[ 3 ] ==    "of")
             response = setValueTo( shift( cmd, 4 ));
         else if (cmd[ 0 ] ==   "get" 
-                && cmd[ 1 ] ==   "the"
-                && cmd[ 2 ] == "value"
-                && cmd[ 3 ] ==    "of")
+              && cmd[ 1 ] ==   "the"
+              && cmd[ 2 ] == "value"
+              && cmd[ 3 ] ==    "of")
             response = getValueOf( shift( cmd, 4 ));
         else if (cmd[ 0 ] == "go")
             response = go( shift( cmd, 1 ));
-		else if (cmd[ 0 ] == "describe" &&
-                      -1 != cmd.indexOf( "page" ))
+		else if (cmd[ 0 ] == "read")
+        	response = read( shift( cmd, 1 ));
+
+        // Interaction Help...
+        else if (cmds[i] == "hello" ||
+                 cmds[i] == "help"  ||
+                 (cmd[1] == "what" && cmd.indexOf( "say" ) != -1))
+            response = help();
+        // ... how [should/do I/you] ...
+        else if (cmd[ 0 ] ==  "how" &&
+                 cmd.indexOf( "navigate" ) != -1)
+            response = toNavigate( true );
+        else if (cmd[ 0 ] ==  "how" &&
+                 cmd.indexOf( "query"    ) != -1)
+            response = toQuery( true );
+        else if (cmd[ 0 ] ==  "how" &&
+                 cmd.indexOf( "interact" ) != -1)
+            response = toInteract( true );
+
+        // Page Description
+        else if (cmd[ 0 ] == "describe" &&
+                 cmd.indexOf(    "page" ) != -1)
 			response = describeThePage();
 		else if (cmd[ 0 ] == "is" &&
-		           cmd[ 1 ] == "there" &&
-	              (cmd[ 2 ] == "a" || cmd[ 2 ] == "an"))
+                 cmd[ 1 ] == "there" &&
+                (cmd[ 2 ] == "a" || cmd[ 2 ] == "an"))
 			response = query( shift( cmd, 2 ), true );
 		else if (cmd[ 0 ] == "do" &&
-		           cmd[ 1 ] == "you" &&
-		           cmd[ 2 ] == "have" &&
-		          (cmd[ 3 ] == "a" || cmd[ 3 ] == "an"))
+                 cmd[ 1 ] == "you" &&
+                 cmd[ 2 ] == "have" &&
+                (cmd[ 3 ] == "a" || cmd[ 3 ] == "an"))
             response = query( shift( cmd, 3 ), false );
-        else if (cmd[ 0 ] == "what" && 
-              -1 != cmd.indexOf( "title" ))
+        else if (cmd[ 0 ] ==  "what" && 
+                 cmd.indexOf( "title" ) != -1)
         	response = titleValue( cmd );
-        else if (cmd[ 0 ] == "what" &&
-              -1 != cmd.indexOf( "headings" ))
+        else if (cmd[ 0 ] ==  "what" &&
+                 cmd.indexOf( "headings" ) != -1)
             response = headingValues( cmd );
-        else if (cmd[ 0 ] == "what" &&
-              -1 != cmd.indexOf( "paragraphs" ))
+        else if (cmd[ 0 ] ==  "what" &&
+                 cmd.indexOf( "paragraphs" ) !=-1)
             response = paragraphValues( cmd );
-        else if (cmd[ 0 ] == "what") // values, links and buttons
+        else if (cmd[ 0 ] == "what") // catch-all: values, links and buttons
             response = whatNames( cmd );
         else if (cmd[ 0 ] == "how" &&
-                   cmd[ 1 ] == "many" )
+                 cmd[ 1 ] == "many" )
             response = howMany( cmd );
-        else if (cmd[ 0 ] == "read")
-        	response = read( shift( cmd, 1 ));
+
+        // Configuring Interaction: nothing supported a yet!
 		else if (cmds[i] == "keep listening")
 			response = felicity[ 0 ] + ", " +"listening mode not supported yet";
 		else if (cmds[i] == "stop listening")
 			response = felicity[ 0 ] + ", " +"listening mode not supported yet";
 		else if (cmds[i] == "verbose")
 			response = felicity[ 0 ] + ", " +"verbosity mode not supported yet";
+
+        // default error response:
 	    else
             response = felicity[0] + ", "+ reply[ 0 ] +" "+ cmds[i];
 
