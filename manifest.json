@@ -10,7 +10,7 @@
   },
   "content_scripts": [
     { "matches" : ["*://*/*"],
-      "js": ["tabRx.js", "interp.js"]
+      "js": ["interp.js"]
   } ],
   "permissions": [
     "activeTab",

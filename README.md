@@ -26,7 +26,7 @@ Where X is the 'name' of the button. Following the specification for clickable i
 
 Similarly, the page reader included the commands:
 - read .. from X
-- read .. from main heading
+- read .. from the main heading
 
 Text and text areas are managed with the commands:
 - set the value of X to Y
@@ -35,7 +35,7 @@ Text and text areas are managed with the commands:
 Describing the page, there are several commands:
 - describe the page
 - how many X are there
-- how do I navigate
+- how do I \[navigate|interact|query]
 - what buttons are there
 
 ## Notes

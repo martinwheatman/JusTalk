@@ -1,5 +1,32 @@
 var felicity = [ "sorry", "ok", "yes", "no" ];
 var reply = [ "i don't understand", "i don't know" ];
+
+var reading = false;
+window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+
+        // kill current speech
+        window.speechSynthesis.cancel();
+    
+        if (reading == true) {
+            //alert( "quitting reading" );
+            reading = false;
+        }
+
+        var recognition = new SpeechRecognition();
+        recognition.start();
+        recognition.continuous = false;
+        recognition.onresult = function(event) {
+            if (event.results[0].isFinal) {
+                window.speechSynthesis.speak(
+                    new SpeechSynthesisUtterance(
+                        interp( event.results[0][0].transcript )
+                )   );
+    }	}   }
+);
+
 var clickMe = null;
 function clickClickMe() {
 	if (clickMe != null) {
@@ -204,17 +231,26 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
 				:  (imp ? "there is not " : "I don't have ")
 					+ article +" "+ str +" "+ type );
 }
+function say( utt ) {
+    window.speechSynthesis.speak(
+        new SpeechSynthesisUtterance( utt ) 
+    );
+}
 function read( cmd ) { // read .../read from/read from main heading
     var response = felicity[0] + ", "+ reply[ 0 ] +" "+ cmd.join( " " );
+    reading = true;
 
     //do we have to read from something
-    var readPHn = true;
+    var found = true; // not looking for anything
+    var readPHn = true; // unless we say otherwise, were reading all paras and headers
     var findMe = "";
     var fromIndex = cmd.indexOf( "from" );
     if (fromIndex > -1) { // we've to find something
+        found = false;
         for (i=0; i <= fromIndex; i++) cmd.shift();
         findMe = cmd.join( " " ).toLowerCase();
-        if (findMe == "main heading") {
+        if (findMe == "the main heading") {
+            found = true;
             findMe = "";
             readPHn = false;
     }   }
@@ -222,22 +258,34 @@ function read( cmd ) { // read .../read from/read from main heading
     // gather text - headings and paragraphs
     response = "";
     var elems = document.getElementsByTagName( "*" );
-    for (elem of elems)
-        if ((readPHn && ( elem.tagName == "P" ||
-                         (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2)))
-         || elem.tagName == "H1")
-        {   response += elem.innerText.toLowerCase() +" ; ; ;  \n";
-            readPHn = true;
-        }
+    for (elem of elems) {
 
-    // jump to a point in the text if required
-    if (findMe != "") {
-        fromIndex = response.indexOf( findMe );
-        response = fromIndex == -1 ?
-            felicity[ 0 ] +", "+ "i can't find the passage beginning with "+ findMe :
-            response.substr( fromIndex );
-    }
-    return response; 
+        // if we've given up get out of here...
+        if (reading == false) break;
+
+        if ( elem.tagName == "P" ||
+            (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2)) {
+
+            // jump to a point in the text if required
+            if (findMe != "") {
+                if (found)
+                    say( elem.innerText );
+                else {
+                    fromIndex = elem.innerText.toLowerCase().indexOf( findMe );
+                    if (fromIndex != -1) {
+                        found = true;
+                        say( elem.innerText.toLowerCase().substr( fromIndex ));
+                }    }
+            
+            // are we reading from (first) main header H1
+            } else if (elem.tagName == "H1" || readPHn) {
+                say( elem.innerText );
+                readPHn = true;
+    }    }    }
+
+    return reading && !found ?
+         felicity[ 0 ] +", "+ "i can't find the passage beginning with "+ findMe
+         : "";
 }
 function titleValue( cmd ) { // what is the title of this page
     var elem = document.getElementsByTagName( "title" );

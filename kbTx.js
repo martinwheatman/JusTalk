@@ -1,7 +1,5 @@
 chrome.commands.onCommand.addListener(function(command) {
   if (command === 'enguage') {
-    // kill current speech
-    window.speechSynthesis.cancel();
     // find the active tab...
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       //send it a message...
