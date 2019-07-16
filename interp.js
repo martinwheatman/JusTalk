@@ -1,29 +1,37 @@
 var felicity = [ "sorry", "ok", "yes", "no" ];
 var reply = [ "i don't understand", "i don't know" ];
 
-var reading = false;
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
 
-        // kill current speech
-        window.speechSynthesis.cancel();
-    
-        if (reading == true) {
-            //alert( "quitting reading" );
-            reading = false;
-        }
+        window.speechSynthesis.pause(); 
 
         var recognition = new SpeechRecognition();
         recognition.start();
         recognition.continuous = false;
         recognition.onresult = function(event) {
             if (event.results[0].isFinal) {
-                window.speechSynthesis.speak(
-                    new SpeechSynthesisUtterance(
-                        interp( event.results[0][0].transcript )
-                )   );
+
+                var utterance = event.results[0][0].transcript;
+                if (utterance == "pause" ||
+                    utterance == "pores" ||
+                    utterance == "pours" ||
+                    utterance == "pools" ||
+                    utterance == "paws")
+                    ; //window.speechSynthesis.pause();
+
+                else if (utterance == "continue")
+                    window.speechSynthesis.resume();
+
+                else {
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(
+                        new SpeechSynthesisUtterance(
+                            interp( utterance )
+                    )   );
+                }
     }	}   }
 );
 
@@ -231,61 +239,69 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
 				:  (imp ? "there is not " : "I don't have ")
 					+ article +" "+ str +" "+ type );
 }
-function say( utt ) {
-    window.speechSynthesis.speak(
-        new SpeechSynthesisUtterance( utt ) 
-    );
-}
+function toNumerics( str ) {
+    switch (str) {
+        case "won"   : return "1";
+        case "too"   :
+        case "two"   :
+        case "to"    : return "2";
+        case "three" : return "3";
+        case "for"   :
+        case "fore"  : return "4";
+        case "ate"   : return "8";
+        default: return str;
+}   }
 function read( cmd ) { // read .../read from/read from main heading
-    var response = felicity[0] + ", "+ reply[ 0 ] +" "+ cmd.join( " " );
-    reading = true;
-
-    //do we have to read from something
-    var found = true; // not looking for anything
-    var readPHn = true; // unless we say otherwise, were reading all paras and headers
+    var response = "";
+    var skip = 0;
+    // do we have to read from something
+    var readPHn = true; // unless we say otherwise, we're reading all paras and headers
     var findMe = "";
     var fromIndex = cmd.indexOf( "from" );
     if (fromIndex > -1) { // we've to find something
-        found = false;
         for (i=0; i <= fromIndex; i++) cmd.shift();
         findMe = cmd.join( " " ).toLowerCase();
         if (findMe == "the main heading") {
-            found = true;
             findMe = "";
             readPHn = false;
+        } else if (cmd.length == 2 && cmd[ 0 ] == "paragraph") {
+            skip = toNumerics(cmd[ 1 ]);
+            readPHn = true;
+            findMe = "";
     }   }
 
-    // gather text - headings and paragraphs
-    response = "";
-    var elems = document.getElementsByTagName( "*" );
-    for (elem of elems) {
-
-        // if we've given up get out of here...
-        if (reading == false) break;
+    // read text - headings and paragraphs
+    for (elem of document.getElementsByTagName( "*" )) {
 
         if ( elem.tagName == "P" ||
             (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2)) {
 
+            // were at a 'paragraph'
+            if (skip > 0) {
+                skip--;
+                continue;
+            }
             // jump to a point in the text if required
             if (findMe != "") {
-                if (found)
-                    say( elem.innerText );
+                if (response != "")
+                    response += elem.innerText +" ";
                 else {
                     fromIndex = elem.innerText.toLowerCase().indexOf( findMe );
-                    if (fromIndex != -1) {
-                        found = true;
-                        say( elem.innerText.toLowerCase().substr( fromIndex ));
-                }    }
+                    if (fromIndex != -1)
+                        response += elem.innerText.toLowerCase().substr( fromIndex ) +" ";
+                }
             
             // are we reading from (first) main header H1
             } else if (elem.tagName == "H1" || readPHn) {
-                say( elem.innerText );
+                response += elem.innerText +" ";
                 readPHn = true;
-    }    }    }
+    }   }   }
 
-    return reading && !found ?
-         felicity[ 0 ] +", "+ "i can't find the passage beginning with "+ findMe
-         : "";
+    return (response != "" ? response :
+                felicity[ 0 ] +", "+
+                    (findMe != "" ?
+                        "i can't find the passage beginning with "+ findMe
+                        : "i can't find anything to read. "))  +". ";
 }
 function titleValue( cmd ) { // what is the title of this page
     var elem = document.getElementsByTagName( "title" );
@@ -404,15 +420,6 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
     }   }
 	return response;
 }
-function toNumerics( str ) {
-    switch (str) {
-        case "won" : return "1";
-        case "too" :
-        case "two" :
-        case "to"  : return "2";
-        case "for" : return "4";
-        default: return str;
-}   }
 function headingValues( cmd ) { // what headings are there
     var headings = [];
     var levelIndex = cmd.indexOf( "level" );
@@ -471,6 +478,7 @@ function help() {
     return toQuery( true ) + toNavigate( false ) + toInteract( false );
 }
 function interp( utterance ) {
+        
     var response = felicity[0] +", "+ reply[ 0 ] +": "+ utterance;
     if (utterance == null) return felicity[0] +", "+ "i didn't catch that";
     var cmds = utterance.split( "and then" );

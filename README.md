@@ -9,6 +9,16 @@ Much of the code is aimed at working around the document injected by the web pag
 and by the visual layout:
 ignoring the header and footer code!
 
+## To install
+
++ Go to the Chrome extensions webside, and add this to your browser. Because,This may be out of date, because it is taking a few days to upload at the moment. This is because this extension works on all websites.
+
++ Otherwise:
+- download these files in this repo into a directory/folder;
+- go to chrome://extensions
+- switch on "Developer mode"
+- Select "Load Unpacked", and load the downloads from the new directory/folder created above.
+
 ## Not a chatbot
 
 The intention of a chatbot is to engage the user in a conversation.
@@ -37,16 +47,6 @@ Describing the page, there are several commands:
 - how many X are there
 - how do I \[navigate|interact|query]
 - what buttons are there
-
-## To install
-
-+ Go to the Chrome extensions webside, and add this to your browser. This may be out of date, because it is taking a few days to upload at the moment. This is because this extension works on all websites.
-
-+ Otherwise:
-- download these files into a directory/folder;
-- go to chrome://extensions
-- switch on "Developer mode"
-- Select "Load Unpacked", and load the downloads from the new directory/folder created above.
 
 ## Notes
 
