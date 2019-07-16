@@ -38,6 +38,16 @@ Describing the page, there are several commands:
 - how do I \[navigate|interact|query]
 - what buttons are there
 
+## To install
+
++ Go to the Chrome extensions webside, and add this to your browser. This may be out of date, because it is taking a few days to upload at the moment. This is because this extension works on all websites.
+
++ Otherwise:
+- download these files into a directory/folder;
+- go to chrome://extensions
+- switch on "Developer mode"
+- Select "Load Unpacked", and load the downloads from the new directory/folder created above.
+
 ## Notes
 
 You'll need Chrome for the moment, I'm afraid.
