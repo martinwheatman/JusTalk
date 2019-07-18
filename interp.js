@@ -239,6 +239,10 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
 				:  (imp ? "there is not " : "I don't have ")
 					+ article +" "+ str +" "+ type );
 }
+function hidden( elem ) {
+    return elem.hasAttribute( "aria-hidden" ) == true &&
+           elem.getAttribute( "aria-hidden" ) == "true";
+}
 function toNumerics( str ) {
     switch (str) {
         case "won"   : return "1";
@@ -273,8 +277,9 @@ function read( cmd ) { // read .../read from/read from main heading
     // read text - headings and paragraphs
     for (elem of document.getElementsByTagName( "*" )) {
 
-        if ( elem.tagName == "P" ||
-            (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2)) {
+        if (!hidden( elem ) &&
+            ( elem.tagName == "P" ||
+             (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2))) {
 
             // were at a 'paragraph'
             if (skip > 0) {
@@ -286,9 +291,9 @@ function read( cmd ) { // read .../read from/read from main heading
                 if (response != "")
                     response += elem.innerText +" ";
                 else {
-                    fromIndex = elem.innerText.toLowerCase().indexOf( findMe );
-                    if (fromIndex != -1)
-                        response += elem.innerText.toLowerCase().substr( fromIndex ) +" ";
+                    var offset = elem.innerText.toLowerCase().indexOf( findMe );
+                    if (offset != -1)
+                        response += elem.innerText.toLowerCase().substr( offset ) +" ";
                 }
             
             // are we reading from (first) main header H1
@@ -308,10 +313,6 @@ function titleValue( cmd ) { // what is the title of this page
     return elem.length == 0 ?
             felicity[ 0 ] +", "+ reply[ 1 ]
             : "the title of this page is: "+ elem[ 0 ].innerText;
-}
-function hidden( elem ) {
-    return elem.hasAttribute( "aria-hidden" ) == true &&
-           elem.getAttribute( "aria-hidden" ) == "true";
 }
 function howMany( cmd ) { // how many X [are there [on this page]]
     var name = cmd[ 2 ];

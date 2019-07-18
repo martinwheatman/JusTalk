@@ -2,6 +2,7 @@
 Just Talk - A Vocal Web Driver
 
 Just Talk is a keyword interpreter which is directed at Web intereaction.
+In many ways is it like SHRDLU, but interacting with the web rather than a world of blocks.
 Specifically, interaction with the Document Object Model.
 This means that it is not necessarily interacting with the web page HTML, 
 but with the document as built.
@@ -19,13 +20,9 @@ ignoring the header and footer code!
 - switch on "Developer mode"
 - Select "Load Unpacked", and load the downloads from the new directory/folder created above.
 
-## Not a chatbot
-
-The intention of a chatbot is to engage the user in a conversation.
-Using keyword search, it provides appropriate (stock) replies, aimed at provoking the user to enter further utterances.
-Just Talk uses keywords, these are to invoke actions to interact with a browser.
+These keywords help the user invoke actions to interact with a browser.
 There are informative replies to reassure the user that the appropriate action has been performed.
-In many ways is it like SHRDLU,  but interacting with the web rather than a world of blocks.
+
 
 # [so] what commands [are there]
 
