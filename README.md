@@ -12,9 +12,11 @@ ignoring the header and footer code!
 
 ## To install
 
-+ Go to the Chrome extensions webside, and add this to your browser. Because,This may be out of date, because it is taking a few days to upload at the moment. This is because this extension works on all websites.
+Go to the Chrome extensions webside, and add this to your browser.
 
-+ Otherwise:
+https://chrome.google.com/webstore/search/enguage?h1=en
+
+Because this may be out of date--it takes a few days for the upload to become visible--you may want to:
 - download these files in this repo into a directory/folder;
 - go to chrome://extensions
 - switch on "Developer mode"
