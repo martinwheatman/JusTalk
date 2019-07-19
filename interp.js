@@ -34,7 +34,14 @@ chrome.runtime.onMessage.addListener(
                 }
     }	}   }
 );
-
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+function shift( cmd, n ) {
+    for (i=0; i<n; i++) cmd.shift();
+    return cmd;
+}
 var clickMe = null;
 function clickClickMe() {
 	if (clickMe != null) {
@@ -91,22 +98,25 @@ function clickOn( cmd ) { // click on X
                      || (clickable.tagName == "INPUT"     && // need to check this too(!)
                          clickable.type    != undefined   &&
                          clickable.type    == "submit"    &&
-                         name              == "submit"     )) clickables.push( clickable );
-                        
+                         name              == "submit"     ))
+                        //if (!clickables.includes( clickable ))
+                            clickables.push( clickable );
+
+                // just click on first found for the moment.        
                 switch (candidates.length) {
                     case 0:
                         return felicity[0] + ", no clickable items match: "+ errMsg;
-                    case 1:
+                    default: //case 1:
                         clickMe = clickables[ 0 ];
                         setTimeout( clickClickMe, 1800 );
                         return felicity[1] +", "+ the + name +" "+ elemType +" is clicked";
-                    default:
-                        return felicity[0] +", several clickable items match "+ the + name +" "+ elemType;
+                    //default:
+                    //    return felicity[0] +", several clickable items match "+ the + name +" "+ elemType;
 }   }	}	}	}
-function shift( cmd, n ) {
-    for (i=0; i<n; i++) cmd.shift();
-    return cmd;
-}
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
 function setValueTo( cmd ) { // set the value of X to Y
     if (cmd.length >= 3) {
     	var name = cmd[ 0 ]; cmd.shift();
@@ -121,11 +131,12 @@ function setValueTo( cmd ) { // set the value of X to Y
             for (el of elements) {
                 if (el.tagName == "INPUT" &&
                     el.type == "text" &&
-                    el.placeholder.toLowerCase().trim().includes( name ))
+                    (el.placeholder.toLowerCase().includes( name ) ||
+                     el.title.toLowerCase().includes( name )))
                 {
                     el.value = value;
                     return felicity[ 1 ] +", "+ name +" set to "+ value;
-            }    }
+            }   }
             return felicity[ 0 ] +", "+ name +" is not a value";
     }	}
     return felicity[0] +", "+ reply[ 0 ] +" "+ cmd.join(" ");
@@ -142,6 +153,10 @@ function getValueOf( cmd ) { // get the value of ...
     }
     return rc;
 }
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
 function go( cmd ) { // go ...
 	var response = felicity[0] +", "+ reply[ 0 ] +": "+ cmd;
 	if (cmd.length > 0) {
@@ -160,6 +175,89 @@ function go( cmd ) { // go ...
 			response = felicity[ 1 ] +", gone forward";
 	}	}
 	return response;
+}
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+function hidden( elem ) {
+    return elem.hasAttribute( "aria-hidden" ) == true &&
+           elem.getAttribute( "aria-hidden" ) == "true";
+}
+function toNumerics( str ) {
+    switch (str) {
+        case "won"   : return "1";
+        case "too"   :
+        case "two"   :
+        case "to"    : return "2";
+        case "three" : return "3";
+        case "for"   :
+        case "fore"  : return "4";
+        case "ate"   : return "8";
+        default: return str;
+}   }
+function read( cmd ) { // read .../read from/read from main heading
+    var response = "";
+    var skip = 0;
+    // do we have to read from something
+    var readPHn = true; // unless we say otherwise, we're reading all paras and headers
+    var findMe = "";
+    var fromIndex = cmd.indexOf( "from" );
+    if (fromIndex > -1) { // we've to find something
+        for (i=0; i <= fromIndex; i++) cmd.shift();
+        findMe = cmd.join( " " ).toLowerCase();
+        if (findMe == "the main heading") {
+            findMe = "";
+            readPHn = false;
+        } else if (cmd.length == 2 && cmd[ 0 ] == "paragraph") {
+            skip = toNumerics(cmd[ 1 ]);
+            readPHn = true;
+            findMe = "";
+    }   }
+
+    // read text - headings and paragraphs
+    for (elem of document.getElementsByTagName( "*" )) {
+
+        if (!hidden( elem ) &&
+            ( elem.tagName == "P" ||
+             (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2))) {
+
+            // were at a 'paragraph'
+            if (skip > 0) {
+                skip--;
+                continue;
+            }
+            // jump to a point in the text if required
+            if (findMe != "") {
+                if (response != "")
+                    response += elem.innerText +" ";
+                else {
+                    var offset = elem.innerText.toLowerCase().indexOf( findMe );
+                    if (offset != -1)
+                        response += elem.innerText.toLowerCase().substr( offset ) +" ";
+                }
+            
+            // are we reading from (first) main header H1
+            } else if (elem.tagName == "H1" || readPHn) {
+                response += elem.innerText +" ";
+                readPHn = true;
+    }   }   }
+
+    return (response != "" ? response :
+                felicity[ 0 ] +", "+
+                    (findMe != "" ?
+                        "i can't find the passage beginning with "+ findMe
+                        : "i can't find anything to read. "))  +". ";
+}
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+function titleValue( cmd ) { // what is the title of this page
+    var elem = document.getElementsByTagName( "title" );
+    return elem.length == 0 ?
+            felicity[ 0 ] +", "+ reply[ 1 ]
+            : "the title of this page is: "+ elem[ 0 ].innerText;
 }
 function articled( str ) {
 	lett = str.toLowerCase().split(" ");
@@ -238,81 +336,6 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
                 (imp ? "but there is " : "but I have ") + response.join( " and " )
 				:  (imp ? "there is not " : "I don't have ")
 					+ article +" "+ str +" "+ type );
-}
-function hidden( elem ) {
-    return elem.hasAttribute( "aria-hidden" ) == true &&
-           elem.getAttribute( "aria-hidden" ) == "true";
-}
-function toNumerics( str ) {
-    switch (str) {
-        case "won"   : return "1";
-        case "too"   :
-        case "two"   :
-        case "to"    : return "2";
-        case "three" : return "3";
-        case "for"   :
-        case "fore"  : return "4";
-        case "ate"   : return "8";
-        default: return str;
-}   }
-function read( cmd ) { // read .../read from/read from main heading
-    var response = "";
-    var skip = 0;
-    // do we have to read from something
-    var readPHn = true; // unless we say otherwise, we're reading all paras and headers
-    var findMe = "";
-    var fromIndex = cmd.indexOf( "from" );
-    if (fromIndex > -1) { // we've to find something
-        for (i=0; i <= fromIndex; i++) cmd.shift();
-        findMe = cmd.join( " " ).toLowerCase();
-        if (findMe == "the main heading") {
-            findMe = "";
-            readPHn = false;
-        } else if (cmd.length == 2 && cmd[ 0 ] == "paragraph") {
-            skip = toNumerics(cmd[ 1 ]);
-            readPHn = true;
-            findMe = "";
-    }   }
-
-    // read text - headings and paragraphs
-    for (elem of document.getElementsByTagName( "*" )) {
-
-        if (!hidden( elem ) &&
-            ( elem.tagName == "P" ||
-             (elem.tagName.startsWith( "H" ) && elem.tagName.length == 2))) {
-
-            // were at a 'paragraph'
-            if (skip > 0) {
-                skip--;
-                continue;
-            }
-            // jump to a point in the text if required
-            if (findMe != "") {
-                if (response != "")
-                    response += elem.innerText +" ";
-                else {
-                    var offset = elem.innerText.toLowerCase().indexOf( findMe );
-                    if (offset != -1)
-                        response += elem.innerText.toLowerCase().substr( offset ) +" ";
-                }
-            
-            // are we reading from (first) main header H1
-            } else if (elem.tagName == "H1" || readPHn) {
-                response += elem.innerText +" ";
-                readPHn = true;
-    }   }   }
-
-    return (response != "" ? response :
-                felicity[ 0 ] +", "+
-                    (findMe != "" ?
-                        "i can't find the passage beginning with "+ findMe
-                        : "i can't find anything to read. "))  +". ";
-}
-function titleValue( cmd ) { // what is the title of this page
-    var elem = document.getElementsByTagName( "title" );
-    return elem.length == 0 ?
-            felicity[ 0 ] +", "+ reply[ 1 ]
-            : "the title of this page is: "+ elem[ 0 ].innerText;
 }
 function howMany( cmd ) { // how many X [are there [on this page]]
     var name = cmd[ 2 ];
@@ -455,6 +478,10 @@ function paragraphValues( cmd ) { // what paragraphs are there
             felicity[ 0 ] +", "+ "there don't appear to be any paragraphs"
             : felicity[ 1 ] +", "+ paragraphs.join( " , " );
 }
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
 function toNavigate( felicious ) {
     return (felicious ? felicity[ 1 ] +", ":"")+
             " To navigate, you can say: "+
@@ -478,6 +505,10 @@ function toInteract( felicious ) {
 function help() {
     return toQuery( true ) + toNavigate( false ) + toInteract( false );
 }
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
 function interp( utterance ) {
         
     var response = felicity[0] +", "+ reply[ 0 ] +": "+ utterance;
