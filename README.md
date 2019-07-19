@@ -1,8 +1,8 @@
 # JustTalk - A Vocal Web Driver
 
-Just Talk is a keyword interpreter which is directed at Web intereaction.
+Just Talk is an *experimental* keyword interpreter which is directed at Web intereaction.
 These keywords help the user invoke the actions of a browser.
-In keeping with speech act thheory, there are informative replies to 
+In keeping with speech act theory, there are informative replies to 
 reassure the user that the appropriate action has been performed.
 In many ways is it like Tery Winograd's Blocks world program, SHRDLU, 
 but it interacts with a web page of widgets rather than a tray of blocks.
@@ -47,7 +47,7 @@ Describing the page, there are several commands:
 - describe the page
 - how many X are there
 - how do I \[navigate|interact|query]
-- what buttons are there
+- what \[buttons|links|...] are there
 
 ## Notes
 
@@ -55,3 +55,5 @@ Describing the page, there are several commands:
 If there's anyone out there in webland who knows a bit about manifests and can make 
 this work on Firefox (etc.), please feel free to get in touch/fix.
 - you'll need to manually allow the microphone access to each page you visit.
+- this is experimental in that the source code may change widely as the extension develops.
+- Radio buttons and checkboxes are still to be completed.
