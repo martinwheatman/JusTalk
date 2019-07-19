@@ -1,14 +1,17 @@
-# JustTalk
-Just Talk - A Vocal Web Driver
+# JustTalk - A Vocal Web Driver
 
 Just Talk is a keyword interpreter which is directed at Web intereaction.
-In many ways is it like SHRDLU, but interacting with the web rather than a world of blocks.
-Specifically, interaction with the Document Object Model.
+These keywords help the user invoke the actions of a browser.
+In keeping with speech act thheory, there are informative replies to 
+reassure the user that the appropriate action has been performed.
+In many ways is it like Tery Winograd's Blocks world program, SHRDLU, 
+but it interacts with a web page of widgets rather than a tray of blocks.
+Specifically, interaction is with the Document Object Model.
 This means that it is not necessarily interacting with the web page HTML, 
 but with the document as built.
-Much of the code is aimed at working around the document injected by the web page, 
-and by the visual layout:
-ignoring the header and footer code!
+Much of the code, therefore, is aimed at working around the document as injected 
+by the web page, and by the visual elements of layout:
+e.g. ignoring the header and footer code!
 
 ## To install
 
@@ -16,15 +19,14 @@ Go to the Chrome extensions webside, and add this to your browser.
 
 https://chrome.google.com/webstore/search/enguage?h1=en
 
-Because this may be out of date--it takes a few days for the upload to become visible--you may want to:
+Because this may be out of date--it takes a few days for the upload to become visible--you may want to see this video:
+
+https://youtu.be/6yZKteo1a2I
+
 - download these files in this repo into a directory/folder;
 - go to chrome://extensions
 - switch on "Developer mode"
 - Select "Load Unpacked", and load the downloads from the new directory/folder created above.
-
-These keywords help the user invoke actions to interact with a browser.
-There are informative replies to reassure the user that the appropriate action has been performed.
-
 
 # [so] what commands [are there]
 
@@ -49,6 +51,7 @@ Describing the page, there are several commands:
 
 ## Notes
 
-You'll need Chrome for the moment, I'm afraid.
+- You'll need Chrome for the moment, I'm afraid.
 If there's anyone out there in webland who knows a bit about manifests and can make 
 this work on Firefox (etc.), please feel free to get in touch/fix.
+- you'll need to manually allow the microphone access to each page you visit.
