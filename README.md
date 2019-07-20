@@ -24,15 +24,16 @@ Because this may be out of date--it takes a few days for the upload to become vi
 - switch on "Developer mode"
 - Select "Load Unpacked", and load the downloads from the new directory/folder created above.
 
-# Use cases:
+## Use cases:
 
 [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
 
-# [so] what commands [are there]
+## Command details
 
-Commands are given as string-literal verb-phrases, interspersed with noun-phrase variables.
-So the keyword search \[guesses-at-meanings] currently include:
+Commands are given as verb-phrase string-literals, interspersed with noun-phrase variables.
+So the comand to click on a button is currently described as:
 - click on X
+
 Where X is the 'name' of the button. Following the specification for clickable items, this is either the title, value, innerText or the 'submit' button.  Radio buttons and checkboxes are not supported yet.
 
 Similarly, the page reader included the commands:
