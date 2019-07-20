@@ -24,6 +24,9 @@ Because this may be out of date--it takes a few days for the upload to become vi
 - switch on "Developer mode"
 - Select "Load Unpacked", and load the downloads from the new directory/folder created above.
 
+If Chrome does not responding to the Ctrl-Space sequence, it
+may be that you need [to unblock your microphone](https://www.youtube.com/watch?v=TiZcsd_BahU).
+
 ## Use cases:
 
 [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
