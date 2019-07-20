@@ -4,8 +4,9 @@ var verbose = false;
 
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 
+/*
 function pageLoad() {
-    if (versbose) {
+    if (verbose) {
         var title = document.getElementsByTagName( "title" );
         window.speechSynthesis.speak(
             new SpeechSynthesisUtterance(
@@ -13,6 +14,7 @@ function pageLoad() {
         )   );
 }   }
 window.addEventListener( "load", pageLoad, false );
+*/
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
@@ -628,12 +630,12 @@ function interp( utterance ) {
 			response = felicity[ 0 ] + ", " +"listening mode not supported yet";
 		else if (cmds[i] == "stop listening")
 			response = felicity[ 0 ] + ", " +"listening mode not supported yet";
-		else if (cmds[i] == "verbose")
+		else if (cmds[i] == "verbose") {
             verbose = !verbose;
-			//response = felicity[ 0 ] + ", " +"verbosity mode not supported yet";
+			response = felicity[ 1 ] + ", " +"verbosity is "+ (verbose ?"on":"off");
 
         // default error response:
-	    else
+        } else
             response = felicity[0] + ", "+ reply[ 0 ] +" "+ cmds[i];
 
         if (response.startsWith( felicity[ 0 ] + "," )) break;
