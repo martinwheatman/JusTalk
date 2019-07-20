@@ -3,6 +3,15 @@ var reply = [ "i don't understand", "i don't know" ];
 
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 
+function pageLoad() { 
+    var title = document.getElementsByTagName( "title" );
+    window.speechSynthesis.speak(
+        new SpeechSynthesisUtterance(
+            felicity[ 1 ]+ ", "+ (title.length == 0 ? "an untitled page" : title[ 0 ].innerText) +" has been loaded"
+    )   );
+}
+window.addEventListener( "load", pageLoad, false );
+
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
 
