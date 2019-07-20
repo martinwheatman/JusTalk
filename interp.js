@@ -130,7 +130,7 @@ function setValueTo( cmd ) { // set the value of X to Y
             var elements = document.getElementsByTagName( "*" );
             for (el of elements) {
                 if (el.tagName == "INPUT" &&
-                    el.type == "text" &&
+                    (el.type == "text" || el.type == "textarea") &&
                     (el.placeholder.toLowerCase().includes( name ) ||
                      el.title.toLowerCase().includes( name )))
                 {
@@ -286,7 +286,7 @@ function describeThePage() {
 				response += articled( "unknown" ) +" link, ";
 		else if (el.tagName == "BUTTON")
 			response += articled( el.innerText ) +" button, ";
-		else if (el.tagName ==  "INPUT" && (el.type ==   "text" ))
+		else if (el.tagName ==  "INPUT" && (el.type == "text" || el.type == "textarea"))
 			response += articled( el.placeholder ) +" value, ";
 		else if (el.tagName ==  "INPUT" && (el.type == "button"   ))
 			if (el.innerText.trim() != "")
@@ -316,7 +316,7 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
              (el.tagName == "INPUT" && el.type == "button"))
              && type == "button" &&
 				 (el.innerText.toLowerCase().trim().includes( str )))
-         || (el.tagName == "INPUT" && el.type == "text"
+         || (el.tagName == "INPUT" && (el.type == "text" || el.type == "textarea")
              && type == "value" &&
                  (el.innerText.toLowerCase().trim().includes( str )))
 				 )
@@ -351,20 +351,20 @@ function howMany( cmd ) { // how many X [are there [on this page]]
     }
     if (elems != null) 
         switch (name) {
-            case "values"     :
+            case "values"  :
                 for (e of elems)
                     if (e.type == "text" || e.type == "textarea")
                         if (!hidden( e ))
                             number++;
                 break;
-            case "buttons"     :
+            case "buttons" :
                 for (e of elems)
                     if ( e.tagName == "BUTTON" ||
                         (e.tagName == "INPUT" && e.type == "button"))
                         if (!hidden( e ))
                             number++;
                 break;
-            default       :
+            default        :
                 for (e of elems)
                     if (!hidden( e ) &&
                         ( e.innerText.trim() != "" ||
@@ -376,6 +376,9 @@ function howMany( cmd ) { // how many X [are there [on this page]]
         felicity[ 0 ]+ ", there are no "+ name
         : felicity[ 1 ]+ ", there are "+ number +" "+ name;
 }
+function attrValue( element, attr ) {
+    return element.hasAttribute( attr ) ? element.getAttribute( attr ).trim().toLowerCase() : "";
+}
 function whatNames( cmd ) { // what .. [buttons|links|values] ..
     var response = felicity[ 0 ] +", "+ reply[ 0 ];
     var x;
@@ -384,7 +387,7 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
     else if (-1 != (x = cmd.indexOf("radio")) && x+1 == cmd.indexof( "buttons" ))
         response = felicity[ 0 ] +", radio buttons are not supported yet";
     else {
-        var type = "";
+        var type = "", name;
              if (-1 != cmd.indexOf( "buttons" )) type = "button";
         else if (-1 != cmd.indexOf(  "values" )) type =  "value";
         else if (-1 != cmd.indexOf(   "links" )) type =   "link";
@@ -399,7 +402,7 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
                     if (el.tagName == "BUTTON") {
                         if (!hidden( el ))
                             widgets.push( articled( el.innerText.toLowerCase().trim()) +" "+type );
-                    } else if (el.tagName == "INPUT" && el.type == "button"){
+                    } else if (el.tagName == "INPUT" && el.type == "button") {
                         if (!hidden( el ))
                             widgets.push( articled( el.title.toLowerCase().trim()) +" "+type );
                     }
@@ -411,8 +414,8 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
                 elems = document.getElementsByTagName( "input" );
                 for (el of elems)
                     if (el.type == "text" || el.type == "textarea")
-                        if (!hidden( el ))
-                            widgets.push( articled( el.title.toLowerCase().trim()) +" "+type );
+                        if (!hidden( el ) && "" != (name = attrValue( el, "placeholder" )))
+                            widgets.push( articled( name ) +" "+type );
                 response = widgets.length == 0 ?
                             felicity[ 0 ] +", "+ "there are no values."
                             : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
@@ -430,9 +433,9 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
                 elems = document.getElementsByTagName( "a" );
                 for (el of elems)
                     if (!hidden( el )) {
-                        var name = el.hasAttribute( "title" ) ?
-                                el.getAttribute( "title" ) :
-                                el.innerText.toLowerCase().trim();
+                        name = el.hasAttribute( "title" ) ?
+                               el.getAttribute( "title" ) :
+                               el.innerText.toLowerCase().trim();
                         if (name != "")
                             widgets.push( articled( name ) +" "+type );
                     }
@@ -440,7 +443,7 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
                                 felicity[ 0 ] +", "+ "there are no links."
                                 : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
                 break;
-            default : response = felicity[ 0 ] +", type not found.";
+            default : response = felicity[ 0 ] +", "+ type +"s type not found.";
     }   }
 	return response;
 }
