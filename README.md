@@ -4,7 +4,8 @@ Just Talk is an *experimental* keyword interpreter which is directed at Web inte
 These keywords help the user invoke the actions of a browser.
 In keeping with speech act theory, there are informative replies to 
 reassure the user that the appropriate action has been performed.
-In many ways is it like Tery Winograd's Blocks world program, SHRDLU, 
+In many ways is it like Tery Winograd's Blocks World program,
+[SHRDLU](https://en.wikipedia.org/wiki/SHRDLU), 
 but it interacts with a web page of widgets rather than a tray of blocks.
 Specifically, interaction is with the Document Object Model.
 This means that it is not necessarily interacting with the web page HTML, 
@@ -15,9 +16,9 @@ e.g. ignoring the header and footer code!
 
 ## To install:
 
-Go to the [Just Talk Chrome extensions webpage](https://chrome.google.com/webstore/search/enguage?h1=en), and add it to your browser.
+Go to the [Just Talk Chrome Extension webpage](https://chrome.google.com/webstore/search/enguage?h1=en), and add it to your browser.
 
-Because this may be out of date--it takes a few days for the upload to become visible--you may want [follow these instuctions](https://youtu.be/6yZKteo1a2I):
+Because this may be out of date--it takes a few days for the upload to become visible--you may want [follow these instructions](https://youtu.be/6yZKteo1a2I):
 
 - download these files in this repo into a directory/folder;
 - go to chrome://extensions
@@ -31,7 +32,7 @@ may be that you need [to unblock your microphone](https://www.youtube.com/watch?
 
 - Ctrl-Space and say "Hello".
 - [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
-- [Using Google to find an aticle on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ).
+- [Using Google to find an article on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ).
 
 ## Command details
 
