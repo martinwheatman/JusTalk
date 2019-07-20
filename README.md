@@ -1,4 +1,4 @@
-# JustTalk - A Vocal Web Driver
+# Just Talk - A Vocal Web Driver
 
 Just Talk is an *experimental* keyword interpreter which is directed at Web intereaction.
 These keywords help the user invoke the actions of a browser.
@@ -29,8 +29,9 @@ may be that you need [to unblock your microphone](https://www.youtube.com/watch?
 
 ## Use cases:
 
+- Ctrl-Space and say "Hello".
 - [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
-- [Using Google to find an aticle on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ)
+- [Using Google to find an aticle on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ).
 
 ## Command details
 
@@ -58,7 +59,7 @@ Describing the page, there are several commands:
 
 - You'll need Chrome for the moment, I'm afraid.
 If there's anyone out there in webland who knows a bit about manifests and can make 
-this work on Firefox (etc.), please feel free to get in touch/fix. I will address this, but its not high priority.
-- you'll need to manually allow the microphone access to each page you visit. This seems to be inaccessible at the moment.
+this work on Firefox (etc.), please feel free to get in touch/fix. I *will* address this, but its not high priority.
+- you'll need to manually allow the microphone access to each page you visit. This pop-up seems to be inaccessible at the moment.
 - this is experimental in that the source code may change widely as the extension develops.
 - Radio buttons and checkboxes are still to be completed.
