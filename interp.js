@@ -1,15 +1,17 @@
 var felicity = [ "sorry", "ok", "yes", "no" ];
 var reply = [ "i don't understand", "i don't know" ];
+var verbose = false;
 
 window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
 
-function pageLoad() { 
-    var title = document.getElementsByTagName( "title" );
-    window.speechSynthesis.speak(
-        new SpeechSynthesisUtterance(
-            felicity[ 1 ]+ ", "+ (title.length == 0 ? "an untitled page" : title[ 0 ].innerText) +" has been loaded"
-    )   );
-}
+function pageLoad() {
+    if (versbose) {
+        var title = document.getElementsByTagName( "title" );
+        window.speechSynthesis.speak(
+            new SpeechSynthesisUtterance(
+                felicity[ 1 ]+ ", "+ (title.length == 0 ? "an untitled page" : title[ 0 ].innerText) +" has been loaded"
+        )   );
+}   }
 window.addEventListener( "load", pageLoad, false );
 
 chrome.runtime.onMessage.addListener(
@@ -161,6 +163,23 @@ function getValueOf( cmd ) { // get the value of ...
 	            elem.value == undefined ? "unset" : "set to " + elem.value;
     }
     return rc;
+}
+function typeIn( utt ) {
+    var msg = "nothing";
+    var value = utt.join( " " );
+    var elements = document.getElementsByTagName( "*" );
+    for (el of elements){
+        if (el.hasAttribute( "focus" )) {
+            msg = "something else";
+            if ( el.tagName == "INPUT" &&
+                (el.type == "text" ||
+                 el.type == "textarea"))
+            {
+                el.value = value;
+                return felicity[ 1 ] +", "+ el.placeholder +" set to "+ value;
+            }
+    }   }
+    return felicity[ 0 ]+ ", "+ msg +" has focus";
 }
 // ****************************************************************************
 // ****************************************************************************
@@ -552,6 +571,9 @@ function interp( utterance ) {
               && cmd[ 2 ] == "value"
               && cmd[ 3 ] ==    "of")
             response = getValueOf( shift( cmd, 4 ));
+        else if (cmd[ 0 ] ==   "type" 
+              && cmd[ 1 ] ==   "in")
+            response = typeIn( shift( cmd, 2 ));
         else if (cmd[ 0 ] == "go")
             response = go( shift( cmd, 1 ));
 		else if (cmd[ 0 ] == "read")
@@ -607,7 +629,8 @@ function interp( utterance ) {
 		else if (cmds[i] == "stop listening")
 			response = felicity[ 0 ] + ", " +"listening mode not supported yet";
 		else if (cmds[i] == "verbose")
-			response = felicity[ 0 ] + ", " +"verbosity mode not supported yet";
+            verbose = !verbose;
+			//response = felicity[ 0 ] + ", " +"verbosity mode not supported yet";
 
         // default error response:
 	    else
