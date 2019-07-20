@@ -29,7 +29,8 @@ may be that you need [to unblock your microphone](https://www.youtube.com/watch?
 
 ## Use cases:
 
-[Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
+- [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
+- [Using Google to find an aticle on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ)
 
 ## Command details
 
