@@ -13,20 +13,20 @@ Much of the code, therefore, is aimed at working around the document as injected
 by the web page, and by the visual elements of layout:
 e.g. ignoring the header and footer code!
 
-## To install
+## To install:
 
-Go to the Chrome extensions webside, and add this to your browser.
+Go to the [Just Talk Chrome extensions webpage](https://chrome.google.com/webstore/search/enguage?h1=en), and add it to your browser.
 
-https://chrome.google.com/webstore/search/enguage?h1=en
-
-Because this may be out of date--it takes a few days for the upload to become visible--you may want to see this video:
-
-https://youtu.be/6yZKteo1a2I
+Because this may be out of date--it takes a few days for the upload to become visible--you may want [follow these instuctions](https://youtu.be/6yZKteo1a2I):
 
 - download these files in this repo into a directory/folder;
 - go to chrome://extensions
 - switch on "Developer mode"
 - Select "Load Unpacked", and load the downloads from the new directory/folder created above.
+
+# Use cases:
+
+[Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
 
 # [so] what commands [are there]
 
@@ -53,7 +53,7 @@ Describing the page, there are several commands:
 
 - You'll need Chrome for the moment, I'm afraid.
 If there's anyone out there in webland who knows a bit about manifests and can make 
-this work on Firefox (etc.), please feel free to get in touch/fix.
-- you'll need to manually allow the microphone access to each page you visit.
+this work on Firefox (etc.), please feel free to get in touch/fix. I will address this, but its not high priority.
+- you'll need to manually allow the microphone access to each page you visit. This seems to be inaccessible at the moment.
 - this is experimental in that the source code may change widely as the extension develops.
 - Radio buttons and checkboxes are still to be completed.
