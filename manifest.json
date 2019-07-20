@@ -1,7 +1,7 @@
 { "name": "Let's JUST TALK to the Web",
   "short_name" : "Just Talk",
   "description": "A vocal Web interface. Press Ctrl+space and say, 'Hello'",
-  "version": "0.98.1",
+  "version": "0.98.2",
   "manifest_version": 2,
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "background": {
