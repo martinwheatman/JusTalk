@@ -30,9 +30,11 @@ may be that you need [to unblock your microphone](https://www.youtube.com/watch?
 
 ## Use cases:
 
-- Ctrl-Space and say "Hello".
-- [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s).
-- [Using Google to find an article on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ).
+- Ctrl-Space and say "Hello";
+- [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s);
+- [Using Google to find an article on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ);
+- Tweeting by voice, still trying!
+- Facebook/Instagram: I'm not on these platforms, anyone else?
 
 ## Command details
 
@@ -54,7 +56,7 @@ Describing the page, there are several commands:
 - describe the page
 - how many X are there
 - how do I \[navigate|interact|query]
-- what \[buttons|links|...] are there
+- what \[buttons|values|links|figures|title|headings|paragraphs] are there
 
 ## Notes
 
