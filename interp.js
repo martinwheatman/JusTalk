@@ -367,13 +367,26 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
 				:  (imp ? "there is not " : "I don't have ")
 					+ article +" "+ str +" "+ type );
 }
-function howMany( cmd ) { // how many X [are there [on this page]]
-    var name = cmd[ 2 ];
+function howMany( cmd ) { // how many [level n headings|X] [are there [on this page]]
+    if (cmd.length == 0) return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": how many";
+    var name = cmd[ 0 ];
     var e, elems = null;
     var number = 0;
+    var level = "*";
+    if (name == "level") {
+        if (cmd.length == 1) {
+            return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": how many level";
+        } else if (cmd.length == 2) {
+            return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": how many level "+ cmd[ 1 ];
+        } else { // ok, "level n headings"...
+            level = toNumerics( cmd[ 1 ]);
+            name = "headings";
+            if (cmd[ 2 ] != name)
+                return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": level "+ cmd[ 1 ] +" "+ cmd[ 2 ];
+    }   }
     switch (name) {
         case "paragraphs" : elems = document.getElementsByTagName( "p" );     break;
-        case "headings"   : elems = document.getElementsByTagName( "h*" );    break;
+        case "headings"   : elems = document.getElementsByTagName( "h" + level );    break;
         case "values"     : elems = document.getElementsByTagName( "input" ); break;
         case "buttons"    : elems = document.getElementsByTagName( "*" );     break;
         case "links"      : elems = document.getElementsByTagName( "a" );     break;
@@ -395,6 +408,8 @@ function howMany( cmd ) { // how many X [are there [on this page]]
                             number++;
                 break;
             default        :
+                if (name == "headings" && level != "*")
+                    name = "level "+ level+ " headings"
                 for (e of elems)
                     if (!hidden( e ) &&
                         ( e.innerText.trim() != "" ||
@@ -623,7 +638,7 @@ function interp( utterance ) {
             response = whatNames( cmd );
         else if (cmd[ 0 ] == "how" &&
                  cmd[ 1 ] == "many" )
-            response = howMany( cmd );
+            response = howMany( shift( cmd, 2 ));
 
         // Configuring Interaction: nothing supported a yet!
 		else if (cmds[i] == "keep listening")
