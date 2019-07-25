@@ -54,9 +54,9 @@ Text and text areas are managed with the commands:
 
 Describing the page, there are several commands:
 - describe the page
-- how many \[buttons|values|links|figures|headings|paragraphs] are there
+- how many \[buttons|values|links|figures|[level n]headings|paragraphs] are there
 - how do I \[navigate|interact|query]
-- what \[buttons|values|links|figures|title|headings|paragraphs] are there
+- what \[buttons|values|links|figures|title|[level n]headings|paragraphs] are there
 
 ## Notes
 
