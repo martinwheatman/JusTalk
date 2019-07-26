@@ -386,7 +386,7 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
     }   }
     switch (name) {
         case "paragraphs" : elems = document.getElementsByTagName( "p" );     break;
-        case "headings"   : elems = document.getElementsByTagName( "h" + level );    break;
+        case "headings"   : elems = document.getElementsByTagName( "h" + level ); break;
         case "values"     : elems = document.getElementsByTagName( "input" ); break;
         case "buttons"    : elems = document.getElementsByTagName( "*" );     break;
         case "links"      : elems = document.getElementsByTagName( "a" );     break;
@@ -424,7 +424,16 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
 function attrValue( element, attr ) {
     return element.hasAttribute( attr ) ? element.getAttribute( attr ).trim().toLowerCase() : "";
 }
-function whatNames( cmd ) { // what .. [buttons|links|values] ..
+function upto7words( str ) {
+    var sa = str.split( " " );
+    var out = [];
+    for (i=0; i<7; i++) {
+        out.push( sa[ i ]);
+        if (sa[ i ] == ".") break;
+    }
+    return out.join( " " );
+}
+function whatNames( cmd ) { // what .. [buttons|links|values|figures|paragraphs] ..
     var response = felicity[ 0 ] +", "+ reply[ 0 ];
     var x;
     if (-1 != cmd.indexOf("checkboxes"))
@@ -433,10 +442,13 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
         response = felicity[ 0 ] +", radio buttons are not supported yet";
     else {
         var type = "", name;
-             if (-1 != cmd.indexOf( "buttons" )) type = "button";
-        else if (-1 != cmd.indexOf(  "values" )) type =  "value";
-        else if (-1 != cmd.indexOf(   "links" )) type =   "link";
-        else if (-1 != cmd.indexOf( "figures" )) type = "figure";
+             if (-1 != cmd.indexOf(  "buttons" )) type = "button";
+        else if (-1 != cmd.indexOf(   "values" )) type =  "value";
+        else if (-1 != cmd.indexOf(    "links" )) type =   "link";
+        else if (-1 != cmd.indexOf(  "figures" )) type = "figure";
+        else if (-1 != cmd.indexOf("paragraphs")) type =  "paras";
+        else if (-1 != cmd.indexOf( "headings" )) type = "heading";
+        else return felicity[ 0 ] +", "+ " i didn't hear a word like: buttons, values, links figures, paragraphs or headings.";
         
         var widgets = [];
         var elems;
@@ -454,6 +466,28 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
                 response = widgets.length == 0 ?
                             felicity[ 0 ] +", "+ "there are no buttons."
                             : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
+                break;
+            case "heading":
+                var levelIndex = cmd.indexOf( "level" );
+                var level = "1";
+                if (levelIndex != -1 && levelIndex+1 < cmd.length-1)
+                    level = toNumerics( cmd[ levelIndex + 1 ]);
+                elems = document.getElementsByTagName( "h"+ level );
+                for (el of elems)
+                    if(!hidden( el ))
+                        widgets.push( el.innerText );
+                response = widgets.length == 0 ?
+                        felicity[ 0 ] +", "+ "there don't appear to be any level "+ level +" headings"
+                        : felicity[ 1 ] +", "+ "this page includes the level "+level+" heading: " + widgets.join( " , and the level "+level+" heading " );
+                break;
+            case "paras":
+                elems = document.getElementsByTagName( "p" );
+                for (el of elems)
+                    if (!hidden( el ))
+                        widgets.push( upto7words( el.innerText ));
+                response = widgets.length == 0 ?
+                        felicity[ 0 ] +", "+ "there don't appear to be any paragraphs"
+                        : felicity[ 1 ] +", "+ widgets.join( " , " );
                 break;
             case "value":
                 elems = document.getElementsByTagName( "input" );
@@ -488,43 +522,9 @@ function whatNames( cmd ) { // what .. [buttons|links|values] ..
                                 felicity[ 0 ] +", "+ "there are no links."
                                 : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
                 break;
-            default : response = felicity[ 0 ] +", "+ type +"s type not found.";
+            default : response = felicity[ 0 ] +", programming error: "+ type +" type is not supported.";
     }   }
 	return response;
-}
-function headingValues( cmd ) { // what headings are there
-    var headings = [];
-    var levelIndex = cmd.indexOf( "level" );
-    var level = "1";
-    if (levelIndex != -1 && levelIndex+1 < cmd.length-1)
-        level = toNumerics( cmd[ levelIndex + 1 ]);
-    var elems = document.getElementsByTagName( "h"+ level );
-    for (elem of elems)
-        if(!hidden( elem ))
-            headings.push( elem.innerText );
-    return headings.length == 0 ?
-            felicity[ 0 ] +", "+ "there don't appear to be any level "+ level +" headings"
-            : felicity[ 1 ] +", "+ "this page includes the heading:" + headings.join( " , and the heading " );
-}
-function upto7words( str ) {
-    var sa = str.split( " " );
-    var out = [];
-    for (i=0; i<7; i++) {
-        out.push( sa[ i ]);
-        if (sa[ i ] == ".") break;
-    }
-    return out.join( " " );
-}
-function paragraphValues( cmd ) { // what paragraphs are there
-    var paragraphs = [];
-    var body = document.getElementsByTagName( "body" );
-    var elems = body[ 0 ].getElementsByTagName( "p" );
-    for (elem of elems)
-        if (!hidden( elem ))
-            paragraphs.push( upto7words( elem.innerText ));
-    return elems.length == 0 ?
-            felicity[ 0 ] +", "+ "there don't appear to be any paragraphs"
-            : felicity[ 1 ] +", "+ paragraphs.join( " , " );
 }
 // ****************************************************************************
 // ****************************************************************************
@@ -628,12 +628,6 @@ function interp( utterance ) {
         else if (cmd[ 0 ] ==  "what" && 
                  cmd.indexOf( "title" ) != -1)
         	response = titleValue( cmd );
-        else if (cmd[ 0 ] ==  "what" &&
-                 cmd.indexOf( "headings" ) != -1)
-            response = headingValues( cmd );
-        else if (cmd[ 0 ] ==  "what" &&
-                 cmd.indexOf( "paragraphs" ) !=-1)
-            response = paragraphValues( cmd );
         else if (cmd[ 0 ] == "what") // catch-all: values, links and buttons
             response = whatNames( cmd );
         else if (cmd[ 0 ] == "how" &&

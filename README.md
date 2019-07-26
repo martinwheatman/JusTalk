@@ -52,7 +52,7 @@ Text and text areas are managed with the commands:
 - set the value of X to Y
 - get the value of X
 
-Describing the page, there are several commands:
+In describing the page, there are several commands:
 - describe the page
 - how many \[buttons|values|links|figures|[level n]headings|paragraphs] are there
 - how do I \[navigate|interact|query]
