@@ -51,6 +51,11 @@ chrome.runtime.onMessage.addListener(
 // ****************************************************************************
 // ****************************************************************************
 // ****************************************************************************
+function includesWord( str, words ) { // to stop 'male' matching 'female'
+    str   = " "+   str.toLowerCase() +" ";
+    words = " "+ words.toLowerCase() +" ";
+    return str.includes( words );
+}
 function shift( cmd, n ) {
     for (i=0; i<n; i++) cmd.shift();
     return cmd;
@@ -61,38 +66,38 @@ function clickClickMe() {
 		clickMe.click()
 		clickMe = null;
 }	}
-function clickOn( cmd ) { // click on X
-	if (cmd.length == 0)
+function clickOn( utt ) { // [click on] X
+	if (utt.length == 0)
 		return felicity[0] + ", "+ reply[ 0 ] +": click on ";
 	else {
-	    var errMsg = cmd.join( " " );
+	    var errMsg = utt.join( " " );
 	    var      the = "";
-	    if (cmd[ 0 ] == "the") {
+	    if (utt[ 0 ] == "the") {
 	        the = "the ";
-	        cmd.shift();
+	        utt.shift();
 	    }
-	    if (cmd.length == 0)
+	    if (utt.length == 0)
 	    	return felicity[0] + ", "+ reply[ 0 ] +": click on the";
 	    else {
 		    var buttons = null, links = null, inputBt = null;
-		    var elemType = cmd[ cmd.length -1 ];
+		    var elemType = utt[ utt.length -1 ];
 		    if (elemType == "link") {
 		        links = document.getElementsByTagName( "a" );
-		        cmd.pop();
+		        utt.pop();
 		    } else if (elemType == "button" ) {
 		        buttons = document.getElementsByTagName( "button" );
 		        inputBt = document.getElementsByTagName( "input" );
-		        cmd.pop();
+		        utt.pop();
 		    } else {
 		        elemType = "";
 		        buttons = document.getElementsByTagName( "button" );
 		        inputBt = document.getElementsByTagName( "input" );
 		        links   = document.getElementsByTagName( "a" );
 		    }
-		    if (cmd.length == 0)
+		    if (utt.length == 0)
 		    	return felicity[0] + ", "+ reply[ 0 ] +": click on "+ the + elemType;
 		    else {
-			    var name = cmd.join( " " ).toLowerCase();
+                utt = utt.join( " " ); // is now a string
 			    var clickable;
 			    var candidates = [];
                 var clickables = [];
@@ -103,15 +108,17 @@ function clickOn( cmd ) { // click on X
 			            candidates.push( inputBt[ i ]);
 			    for (clickable of candidates)
 			        if ((clickable.title != undefined     &&
-                         clickable.title.trim().toLowerCase().includes( name )) 
+                         includesWord( clickable.title, utt )) 
                      || (clickable.value != undefined     &&
-                         clickable.value.trim().toLowerCase().includes( name ))
+                         includesWord( clickable.value, utt ))
                      || (clickable.innerText != undefined &&
-                         clickable.innerText.trim().toLowerCase().includes( name ))
+                         includesWord( clickable.innerText, utt ))
+                     || (clickable.hasAttribute( "aria-label" ) &&
+                         includesWord( clickable.getAttribute( "aria-label", utt )))
                      || (clickable.tagName == "INPUT"     && // need to check this too(!)
                          clickable.type    != undefined   &&
                          clickable.type    == "submit"    &&
-                         name              == "submit"     ))
+                         utt               == "submit"     ))
                         //if (!clickables.includes( clickable ))
                             clickables.push( clickable );
 
@@ -122,7 +129,7 @@ function clickOn( cmd ) { // click on X
                     default: //case 1:
                         clickMe = clickables[ 0 ];
                         setTimeout( clickClickMe, 1800 );
-                        return felicity[1] +", "+ the + name +" "+ elemType +" is clicked";
+                        return felicity[1] +", "+ the + utt +" "+ elemType +" is clicked";
                     //default:
                     //    return felicity[0] +", several clickable items match "+ the + name +" "+ elemType;
 }   }	}	}	}
@@ -144,8 +151,8 @@ function setValueTo( cmd ) { // set the value of X to Y
             for (el of elements) {
                 if (el.tagName == "INPUT" &&
                     (el.type == "text" || el.type == "textarea") &&
-                    (el.placeholder.toLowerCase().includes( name ) ||
-                     el.title.toLowerCase().includes( name )))
+                    (includesWord( el.placeholder, name ) ||
+                     includesWord( el.title,       name )   ))
                 {
                     el.value = value;
                     return felicity[ 1 ] +", "+ name +" set to "+ value;
@@ -340,15 +347,15 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
 	var elements = document.getElementsByTagName( "*" );
 	for (el of elements) if (!hidden( el )) {
 		if ((el.tagName == "A" && type == "link" &&
-				(el.title.toLowerCase().trim().includes( str ) ||
-				 el.innerText.toLowerCase().trim().includes( str )))
+				(includesWord( el.title,     str ) ||
+				 includesWord( el.innerText, str )   ))
          || ((el.tagName == "BUTTON" ||
              (el.tagName == "INPUT" && el.type == "button"))
              && type == "button" &&
-				 (el.innerText.toLowerCase().trim().includes( str )))
+				 (includesWord( el.innerText, str )))
          || (el.tagName == "INPUT" && (el.type == "text" || el.type == "textarea")
              && type == "value" &&
-                 (el.innerText.toLowerCase().trim().includes( str )))
+                 (includesWord(el.innerText, str )))
 				 )
 			return felicity[ 2 ] + " , "
 					+ (imp ? "there is " : "I have ")
@@ -356,10 +363,10 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
         else if (((el.tagName == "BUTTON" ||
                   (el.tagName == "INPUT" && el.type == "button"))
                   && type == "link" &&
-					(el.innerText.toLowerCase().trim().includes( str )))
+					(includesWord( el.innerText, str )))
 			 ||  (el.tagName == "A" && type == "button" &&
-					(el.title.toLowerCase().trim().includes( str ) ||
-					 el.innerText.toLowerCase().trim().includes( str ))))
+					(includesWord( el.title,     str ) ||
+					 includesWord( el.innerText, str )   )))
 			response.push( article +" "+ str +" "+ (type=="link"?"button":"link" ));		
 	}
 	return felicity[ 3 ] + " , " + (response.length > 0 ?
