@@ -290,12 +290,6 @@ function read( cmd ) { // read .../read from/read from main heading
 // ****************************************************************************
 // ****************************************************************************
 // ****************************************************************************
-function titleValue( cmd ) { // what is the title of this page
-    var elem = document.getElementsByTagName( "title" );
-    return elem.length == 0 ?
-            felicity[ 0 ] +", "+ reply[ 1 ]
-            : "the title of this page is: "+ elem[ 0 ].innerText;
-}
 function articled( str ) {
 	lett = str.toLowerCase().split(" ");
 	if (lett[0].length == 1) {
@@ -440,7 +434,7 @@ function upto7words( str ) {
     }
     return out.join( " " );
 }
-function whatNames( cmd ) { // what .. [buttons|links|values|figures|paragraphs] ..
+function what( cmd ) { // [what|list] .. [buttons|links|values|figures|paragraphs] ..
     var response = felicity[ 0 ] +", "+ reply[ 0 ];
     var x;
     if (-1 != cmd.indexOf("checkboxes"))
@@ -455,11 +449,18 @@ function whatNames( cmd ) { // what .. [buttons|links|values|figures|paragraphs]
         else if (-1 != cmd.indexOf(  "figures" )) type = "figure";
         else if (-1 != cmd.indexOf("paragraphs")) type =  "paras";
         else if (-1 != cmd.indexOf( "headings" )) type = "heading";
+        else if (-1 != cmd.indexOf(    "title" )) type =   "title";
         else return felicity[ 0 ] +", "+ " i didn't hear a word like: buttons, values, links figures, paragraphs or headings.";
         
         var widgets = [];
         var elems;
         switch (type) {
+            case "title":
+                var elem = document.getElementsByTagName( "title" );
+                response = elem.length == 0 ?
+                        felicity[ 0 ] +", "+ reply[ 1 ]
+                        : "the title of this page is: "+ elem[ 0 ].innerText;
+                break;
             case "button":
                 elems = document.getElementsByTagName( "*" );
                 for (el of elems)
@@ -475,6 +476,7 @@ function whatNames( cmd ) { // what .. [buttons|links|values|figures|paragraphs]
                             : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
                 break;
             case "heading":
+                // find level n
                 var levelIndex = cmd.indexOf( "level" );
                 var level = "1";
                 if (levelIndex != -1 && levelIndex+1 < cmd.length-1)
@@ -632,11 +634,15 @@ function interp( utterance ) {
                  cmd[ 2 ] == "have" &&
                 (cmd[ 3 ] == "a" || cmd[ 3 ] == "an"))
             response = query( shift( cmd, 3 ), false );
-        else if (cmd[ 0 ] ==  "what" && 
-                 cmd.indexOf( "title" ) != -1)
-        	response = titleValue( cmd );
-        else if (cmd[ 0 ] == "what") // catch-all: values, links and buttons
-            response = whatNames( cmd );
+		else if (cmd[ 0 ] == "does" &&
+                 cmd[ 1 ] == "this" &&
+                 cmd[ 2 ] == "page" &&
+                 cmd[ 3 ] == "have" &&
+                (cmd[ 4 ] == "a" || cmd[ 4 ] == "an"))
+            response = query( shift( cmd, 4 ), false );
+        else if (cmd[ 0 ] == "what" ||
+                 cmd[ 0 ] == "list") // catch-all: values, links and buttons
+            response = what( cmd );
         else if (cmd[ 0 ] == "how" &&
                  cmd[ 1 ] == "many" )
             response = howMany( shift( cmd, 2 ));
