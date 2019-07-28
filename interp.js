@@ -70,7 +70,7 @@ function clickOn( utt ) { // [click on] X
 	if (utt.length == 0)
 		return felicity[0] + ", "+ reply[ 0 ] +": click on ";
 	else {
-	    var errMsg = utt.join( " " );
+        var errMsg = utt.join( " " );
 	    var      the = "";
 	    if (utt[ 0 ] == "the") {
 	        the = "the ";
@@ -108,13 +108,13 @@ function clickOn( utt ) { // [click on] X
 			            candidates.push( inputBt[ i ]);
 			    for (clickable of candidates)
 			        if ((clickable.title != undefined     &&
-                         includesWord( clickable.title, utt )) 
+                         includesWord( clickable.title, utt ))
                      || (clickable.value != undefined     &&
                          includesWord( clickable.value, utt ))
                      || (clickable.innerText != undefined &&
                          includesWord( clickable.innerText, utt ))
                      || (clickable.hasAttribute( "aria-label" ) &&
-                         includesWord( clickable.getAttribute( "aria-label", utt )))
+                         includesWord( clickable.getAttribute( "aria-label" ), utt ))
                      || (clickable.tagName == "INPUT"     && // need to check this too(!)
                          clickable.type    != undefined   &&
                          clickable.type    == "submit"    &&
