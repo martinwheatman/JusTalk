@@ -71,7 +71,7 @@ function clickOn( utt ) { // [click on] X
 		return felicity[0] + ", "+ reply[ 0 ] +": click on ";
 	else {
         var errMsg = utt.join( " " );
-	    var      the = "";
+	    var    the = "";
 	    if (utt[ 0 ] == "the") {
 	        the = "the ";
 	        utt.shift();
