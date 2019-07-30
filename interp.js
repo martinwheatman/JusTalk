@@ -51,10 +51,10 @@ chrome.runtime.onMessage.addListener(
 // ****************************************************************************
 // ****************************************************************************
 // ****************************************************************************
-function includesWord( str, words ) { // to stop 'male' matching 'female'
-    str   = " "+   str.toLowerCase() +" ";
-    words = " "+ words.toLowerCase() +" ";
-    return str.includes( words );
+function includesWord( src, trg ) { // to stop 'male' matching 'female'
+    src = " "+ src.toLowerCase();
+    trg = " "+ trg.toLowerCase();
+    return src.includes( trg );
 }
 function shift( cmd, n ) {
     for (i=0; i<n; i++) cmd.shift();
@@ -381,17 +381,17 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
             return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": how many level "+ cmd[ 1 ];
         } else { // ok, "level n headings"...
             level = toNumerics( cmd[ 1 ]);
-            name = "headings";
-            if (cmd[ 2 ] != name)
-                return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": level "+ cmd[ 1 ] +" "+ cmd[ 2 ];
+            name = cmd[ 2 ];
     }   }
     switch (name) {
-        case "paragraphs" : elems = document.getElementsByTagName( "p" );     break;
+        case "headers"    :
         case "headings"   : elems = document.getElementsByTagName( "h" + level ); break;
-        case "values"     : elems = document.getElementsByTagName( "input" ); break;
-        case "buttons"    : elems = document.getElementsByTagName( "*" );     break;
-        case "links"      : elems = document.getElementsByTagName( "a" );     break;
-        case "figures"    : elems = document.getElementsByTagName( "figure" );break;
+        case "paragraphs" : elems = document.getElementsByTagName( "p" );      break;
+        case "values"     : elems = document.getElementsByTagName( "input" );  break;
+        case "buttons"    : elems = document.getElementsByTagName( "*" );      break;
+        case "links"      : elems = document.getElementsByTagName( "a" );      break;
+        case "figures"    : elems = document.getElementsByTagName( "figure" ); break;
+        default           : return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": "+ cmd.join( " " );
     }
     if (elems != null) 
         switch (name) {
@@ -409,8 +409,8 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
                             number++;
                 break;
             default        :
-                if (name == "headings" && level != "*")
-                    name = "level "+ level+ " headings"
+                if ((name == "headings" || name == "headers") && level != "*")
+                    name = "level "+ level+ " " + name;
                 for (e of elems)
                     if (!hidden( e ) &&
                         ( e.innerText.trim() != "" ||
@@ -448,9 +448,10 @@ function what( cmd ) { // [what|list] .. [buttons|links|values|figures|paragraph
         else if (-1 != cmd.indexOf(    "links" )) type =   "link";
         else if (-1 != cmd.indexOf(  "figures" )) type = "figure";
         else if (-1 != cmd.indexOf("paragraphs")) type =  "paras";
-        else if (-1 != cmd.indexOf( "headings" )) type = "heading";
+        else if (-1 != cmd.indexOf( "headings" )) type =  "header";
+        else if (-1 != cmd.indexOf(  "headers" )) type = "heading";
         else if (-1 != cmd.indexOf(    "title" )) type =   "title";
-        else return felicity[ 0 ] +", "+ " i didn't hear a word like: buttons, values, links figures, paragraphs or headings.";
+        else return felicity[ 0 ] +", "+ " i didn't hear a word like: buttons, values, links figures, paragraphs or headers.";
         
         var widgets = [];
         var elems;
@@ -475,6 +476,7 @@ function what( cmd ) { // [what|list] .. [buttons|links|values|figures|paragraph
                             felicity[ 0 ] +", "+ "there are no buttons."
                             : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
                 break;
+            case "header":
             case "heading":
                 // find level n
                 var levelIndex = cmd.indexOf( "level" );
@@ -486,8 +488,9 @@ function what( cmd ) { // [what|list] .. [buttons|links|values|figures|paragraph
                     if(!hidden( el ))
                         widgets.push( el.innerText );
                 response = widgets.length == 0 ?
-                        felicity[ 0 ] +", "+ "there don't appear to be any level "+ level +" headings"
-                        : felicity[ 1 ] +", "+ "this page includes the level "+level+" heading: " + widgets.join( " , and the level "+level+" heading " );
+                        felicity[ 0 ] +", "+ "there don't appear to be any level "+ level +" "+ type +"s"
+                        : felicity[ 1 ] +", "+ "this page includes the level "+level+" "+ type +": "
+                                                    + widgets.join( " , and the level "+level+" "+ type +" " );
                 break;
             case "paras":
                 elems = document.getElementsByTagName( "p" );
