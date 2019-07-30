@@ -218,8 +218,13 @@ function go( cmd ) { // go ...
 // ****************************************************************************
 // ****************************************************************************
 function hidden( elem ) {
-    return elem.hasAttribute( "aria-hidden" ) == true &&
-           elem.getAttribute( "aria-hidden" ) == "true";
+    return elem.style.display    ==     "none"             ||
+           elem.style.visibility ==   "hidden"             ||
+           elem.style.visibility == "collapse"             ||
+           (elem.style.visibility == "inherit"         &&
+            hidden( elem.parentNode )                    ) ||
+           (elem.hasAttribute( "aria-hidden" ) == true &&
+            elem.getAttribute( "aria-hidden" ) == "true" );
 }
 function toNumerics( str ) {
     switch (str) {
