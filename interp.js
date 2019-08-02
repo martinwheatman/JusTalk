@@ -396,7 +396,7 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
         case "buttons"    : elems = document.getElementsByTagName( "*" );      break;
         case "links"      : elems = document.getElementsByTagName( "a" );      break;
         case "figures"    : elems = document.getElementsByTagName( "figure" ); break;
-        default           : return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": "+ cmd.join( " " );
+        default           : return felicity[ 0 ]+ ", "+ reply[ 0 ]+ ": how many "+ cmd.join( " " );
     }
     if (elems != null) 
         switch (name) {
