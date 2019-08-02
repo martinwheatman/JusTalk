@@ -79,7 +79,7 @@ function clickOn( utt ) { // [click on] X
 	    if (utt.length == 0)
 	    	return felicity[0] + ", "+ reply[ 0 ] +": click on the";
 	    else {
-		    var buttons = null, links = null, inputBt = null;
+		    var buttons = null, links = null, inputBt = null, labels = null;
 		    var elemType = utt[ utt.length -1 ];
 		    if (elemType == "link") {
 		        links = document.getElementsByTagName( "a" );
@@ -87,6 +87,10 @@ function clickOn( utt ) { // [click on] X
 		    } else if (elemType == "button" ) {
 		        buttons = document.getElementsByTagName( "button" );
 		        inputBt = document.getElementsByTagName( "input" );
+		        utt.pop();
+		    } else if (elemType == "checkbox" ) {
+		        inputBt = document.getElementsByTagName( "input" );
+		        labels  = document.getElementsByTagName( "label" );
 		        utt.pop();
 		    } else {
 		        elemType = "";
@@ -100,12 +104,15 @@ function clickOn( utt ) { // [click on] X
                 utt = utt.join( " " ); // is now a string
 			    var clickable;
 			    var candidates = [];
-                var clickables = [];
-			    if (buttons != null) for (i=0; i<buttons.length; i++) candidates.push( buttons[ i ]);
+                if (buttons != null) for (i=0; i<buttons.length; i++) candidates.push( buttons[ i ]);
 			    if (links   != null) for (i=0; i < links.length; i++) candidates.push(   links[ i ]);
+			    if (labels  != null) for (i=0; i <labels.length; i++) candidates.push(  labels[ i ]);
 			    if (inputBt != null) for (i=0; i<inputBt.length; i++)
-			        if (inputBt[ i ].type == "button" || inputBt[ i ].type == "submit")
+			        if ((inputBt[ i ].type == "button"   && (elemType=="" || elemType=="button")) ||
+                        (inputBt[ i ].type == "checkbox" && (elemType=="" || elemType=="checkbox"))||
+                         inputBt[ i ].type == "submit" )
 			            candidates.push( inputBt[ i ]);
+			    var clickables = [];
 			    for (clickable of candidates)
 			        if ((clickable.title != undefined     &&
                          includesWord( clickable.title, utt ))
@@ -393,6 +400,7 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
         case "headings"   : elems = document.getElementsByTagName( "h" + level ); break;
         case "paragraphs" : elems = document.getElementsByTagName( "p" );      break;
         case "values"     : elems = document.getElementsByTagName( "input" );  break;
+        case "checkboxes" : elems = document.getElementsByTagName( "input" );  break;
         case "buttons"    : elems = document.getElementsByTagName( "*" );      break;
         case "links"      : elems = document.getElementsByTagName( "a" );      break;
         case "figures"    : elems = document.getElementsByTagName( "figure" ); break;
@@ -410,6 +418,12 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
                 for (e of elems)
                     if ( e.tagName == "BUTTON" ||
                         (e.tagName == "INPUT" && e.type == "button"))
+                        if (!hidden( e ))
+                            number++;
+                break;
+            case "checkboxes" :
+                for (e of elems)
+                    if (e.tagName == "INPUT" && e.type == "checkbox")
                         if (!hidden( e ))
                             number++;
                 break;
