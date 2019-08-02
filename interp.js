@@ -123,7 +123,7 @@ function clickOn( utt ) { // [click on] X
                             clickables.push( clickable );
 
                 // just click on first found for the moment.        
-                switch (candidates.length) {
+                switch (clickables.length) {
                     case 0:
                         return felicity[0] + ", no clickable items match: "+ errMsg;
                     default: //case 1:
@@ -574,6 +574,15 @@ function help() {
 // ****************************************************************************
 // ****************************************************************************
 // ****************************************************************************
+var halfpage = Math.floor( screen.availHeight / 2 );
+function scroll( down ) {
+    window.scrollBy( 0, down ? halfpage : -halfpage );
+    return felicity[ 1 ] +", "+ "scrolled "+(down?"down":"up")+".";
+}
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
 function interp( utterance ) {
         
     var response = felicity[0] +", "+ reply[ 0 ] +": "+ utterance;
@@ -654,6 +663,14 @@ function interp( utterance ) {
         else if (cmd[ 0 ] == "how" &&
                  cmd[ 1 ] == "many" )
             response = howMany( shift( cmd, 2 ));
+
+        // window interaction...
+        else if (cmd[ 0 ] == "scroll" &&
+                 cmd[ 1 ] == "up")
+            response = scroll( false );
+        else if (cmd[ 0 ] == "scroll" &&
+                 cmd[ 1 ] == "down")
+            response = scroll( true );
 
         // Configuring Interaction: nothing supported a yet!
 		else if (cmds[i] == "keep listening")
