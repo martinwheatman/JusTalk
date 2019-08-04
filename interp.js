@@ -565,7 +565,8 @@ function toNavigate( felicious ) {
     return (felicious ? felicity[ 1 ] +", ":"")+
             " To navigate, you can say: "+
             " go to website dot com; or, you can say, "+
-            " click on x, or click on the x link.\n";
+            " click on x, or click on the x link."+
+            " You can also say, scroll up or down.\n";
 }
 function toQuery( felicious ) {
     return  (felicious ? felicity[ 1 ] +", ":"")+
