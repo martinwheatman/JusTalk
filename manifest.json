@@ -6,7 +6,7 @@
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "background": {
     "scripts": ["kbTx.js"],
-    "persistent": false
+    "persistent": true
   },
   "content_scripts": [
     { "matches" : ["*://*/*"],
