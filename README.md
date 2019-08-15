@@ -1,4 +1,4 @@
-# Just Talk - A Vocal Web Driver
+# JusTalk - A Vocal Web Driver
 
 Just Talk is an *experimental* keyword interpreter which is directed at Web intereaction.
 These keywords help the user invoke the actions of a browser.
