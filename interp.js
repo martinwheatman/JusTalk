@@ -28,6 +28,7 @@ chrome.runtime.onMessage.addListener(
             if (event.results[0].isFinal) {
 
                 var utterance = event.results[0][0].transcript;
+
                 if (utterance == "pause" ||
                     utterance == "pores" ||
                     utterance == "pours" ||
@@ -326,28 +327,46 @@ function articled( str ) {
 			return " an "+ str;
 		default: return " a "+ str;
 }	}
+function labelledNodeDesc( el ) {
+    return el.parentNode.nodeName == "LABEL" ? articled( el.parentNode.innerText ):
+           el.value.trim()        !=      "" ? articled( el.value ) :
+                                               articled( "unknown" );
+}
+function innerTextOrValueDesc( el ) {
+    return el.innerText.trim() != "" ? articled( el.innerText ):
+           el.value.trim()     != "" ? articled( el.value    ):
+                                       articled( "unknown"  );
+}
+function titleOrInnerTextDesc( el ) {
+    return el.title.trim()     != "" ? articled( el.title )    :
+           el.innerText.trim() != "" ? articled( el.innerText ):
+                                       articled( "unknown" )   ;
+}
 function describeThePage() {
 	var response = "";
 	var elements = document.getElementsByTagName( "*" );
 	for (el of elements)
 		if (el.tagName ==      "A")
-			if (el.title.trim() != "")
-				response += articled( el.title ) +" link, ";
-			else if (el.innerText.trim() != "")
-				response += articled( el.innerText ) +" link, ";
-			else
-				response += articled( "unknown" ) +" link, ";
+			response += titleOrInnerTextDesc( el ) +" link, ";
+
 		else if (el.tagName == "BUTTON")
 			response += articled( el.innerText ) +" button, ";
-		else if (el.tagName ==  "INPUT" && (el.type == "text" || el.type == "textarea"))
+
+		else if (el.tagName == "INPUT" && (el.type == "text" || el.type == "textarea"))
 			response += articled( el.placeholder ) +" value, ";
-		else if (el.tagName ==  "INPUT" && (el.type == "button"   ))
-			if (el.innerText.trim() != "")
-				response += articled( el.innerText ) +" button, ";
-			else if (el.value.trim() != "")
-				response += articled( el.value ) +" button, ";
-			else
-				response += articled( "unknown" ) +" button, ";
+
+		else if (el.tagName == "INPUT" && (el.type == "button"   ))
+			response += innerTextOrValueDesc( el ) + " button, ";
+                
+		else if (el.tagName == "INPUT" && (el.type == "submit"   ))
+			response += innerTextOrValueDesc( el ) + " submit button, ";
+                
+		else if (el.tagName == "INPUT" && (el.type == "radio"   ))
+			response += labelledNodeDesc( el )+ " radio button, ";
+
+		else if (el.tagName == "INPUT" && (el.type == "checkbox"   ))
+			response += labelledNodeDesc( el )+ " check box, ";
+
     return felicity[ 1 ] +", on this page there is "+
                     (response == "" ? "nothing" : response);
 }
