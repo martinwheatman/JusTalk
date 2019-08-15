@@ -1,5 +1,5 @@
-{ "name": "Let's JUST TALK to the Web",
-  "short_name" : "Just Talk",
+{ "name": "Let's JusTalk to the Web",
+  "short_name" : "JusTalk",
   "description": "A vocal Web interface. Press Ctrl+space and say, 'Hello'",
   "version": "0.98.3",
   "manifest_version": 2,
