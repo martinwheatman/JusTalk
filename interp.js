@@ -66,7 +66,7 @@ function clickClickMe() {
 		clickMe.click()
 		clickMe = null;
 }	}
-function clickOn( utt ) { // [click on] X
+function clickOn( utt ) { // [click on] [the] X [button|link|checkbox|radio button]
 	if (utt.length == 0)
 		return felicity[0] + ", "+ reply[ 0 ] +": click on ";
 	else {
@@ -80,12 +80,16 @@ function clickOn( utt ) { // [click on] X
 	    	return felicity[0] + ", "+ reply[ 0 ] +": click on the";
 	    else {
 		    var buttons = null, links = null, inputBt = null, labels = null;
-		    var elemType = utt[ utt.length -1 ];
+		    var elemType = utt.length < 1 ? "" : utt[ utt.length -1 ],
+                typeAdj  = utt.length < 2 ? "" : utt[ utt.length -2 ]; // "radio" ?
 		    if (elemType == "link") {
 		        links = document.getElementsByTagName( "a" );
 		        utt.pop();
 		    } else if (elemType == "button" ) {
-		        buttons = document.getElementsByTagName( "button" );
+                if (typeAdj != "radio") {
+		            buttons = document.getElementsByTagName( "button" );
+                    utt.pop();
+                }
 		        inputBt = document.getElementsByTagName( "input" );
 		        utt.pop();
 		    } else if (elemType == "checkbox" ) {
@@ -110,6 +114,7 @@ function clickOn( utt ) { // [click on] X
 			    if (inputBt != null) for (i=0; i<inputBt.length; i++)
 			        if ((inputBt[ i ].type == "button"   && (elemType=="" || elemType=="button")) ||
                         (inputBt[ i ].type == "checkbox" && (elemType=="" || elemType=="checkbox"))||
+                        (inputBt[ i ].type == "radio"    && (elemType=="" ||  typeAdj=="radio"))||
                          inputBt[ i ].type == "submit" )
 			            candidates.push( inputBt[ i ]);
 			    var clickables = [];
@@ -125,7 +130,12 @@ function clickOn( utt ) { // [click on] X
                      || (clickable.tagName == "INPUT"     && // need to check this too(!)
                          clickable.type    != undefined   &&
                          clickable.type    == "submit"    &&
-                         utt               == "submit"     ))
+                         utt               == "submit"     )
+                     || (clickable.tagName == "INPUT"     &&
+                         clickable.type    != undefined   &&
+                         clickable.type    == "radio"    &&
+                         (//includesWord( clickable.value, utt ) ||
+                          includesWord( clickable.parentNode.innerText, utt ) ))) // label?
                         //if (!clickables.includes( clickable ))
                             clickables.push( clickable );
 
