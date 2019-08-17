@@ -135,7 +135,7 @@ function clickOn( utt ) { // [click on] [the] X [button|link|checkbox|radio butt
                      || (clickable.tagName == "INPUT"     &&
                          clickable.type    != undefined   &&
                          clickable.type    == "radio"    &&
-                         (//includesWord( clickable.value, utt ) ||
+                         (clickable.parentNode.nodeName == "LABEL" &&
                           includesWord( clickable.parentNode.innerText, utt ) ))) // label?
                         //if (!clickables.includes( clickable ))
                             clickables.push( clickable );
