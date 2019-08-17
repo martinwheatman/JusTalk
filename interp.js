@@ -480,6 +480,9 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
 function attrValue( element, attr ) {
     return element.hasAttribute( attr ) ? element.getAttribute( attr ).trim().toLowerCase() : "";
 }
+function labelValue( el ) {
+    return el.parentNode.nodeName=="LABEL" ? el.parentNode.innerText : el.value;
+}
 function upto7words( str ) {
     var sa = str.split( " " );
     var out = [];
@@ -490,109 +493,124 @@ function upto7words( str ) {
     return out.join( " " );
 }
 function what( cmd ) { // [what|list] .. [buttons|links|values|figures|paragraphs] ..
-    var response = felicity[ 0 ] +", "+ reply[ 0 ];
-    var x;
-    if (-1 != cmd.indexOf("checkboxes"))
-        response = felicity[ 0 ] +", checkboxes are not supported yet";
-    else if (-1 != (x = cmd.indexOf("radio")) && x+1 == cmd.indexof( "buttons" ))
-        response = felicity[ 0 ] +", radio buttons are not supported yet";
-    else {
-        var type = "", name;
-             if (-1 != cmd.indexOf(    "radio" )) type =  "radio";
-        else if (-1 != cmd.indexOf(  "buttons" )) type = "button";
-        else if (-1 != cmd.indexOf(   "values" )) type =  "value";
-        else if (-1 != cmd.indexOf(    "links" )) type =   "link";
-        else if (-1 != cmd.indexOf(  "figures" )) type = "figure";
-        else if (-1 != cmd.indexOf("paragraphs")) type =  "paras";
-        else if (-1 != cmd.indexOf( "headings" )) type =  "header";
-        else if (-1 != cmd.indexOf(  "headers" )) type = "heading";
-        else if (-1 != cmd.indexOf(    "title" )) type =   "title";
-        else return felicity[ 0 ] +", "+ " i didn't hear a word like: buttons, values, links figures, paragraphs or headers.";
+    var widgets = [];
+    var response = reply[ 0 ];
+    var type = "", name;
+            if (-1 != cmd.indexOf(    "radio" )) type =   "radio";
+    else if (-1 != cmd.indexOf("checkboxes")) type ="checkbox";
+    else if (-1 != cmd.indexOf(  "buttons" )) type =  "button";
+    else if (-1 != cmd.indexOf(   "values" )) type =   "value";
+    else if (-1 != cmd.indexOf(    "links" )) type =    "link";
+    else if (-1 != cmd.indexOf(  "figures" )) type =  "figure";
+    else if (-1 != cmd.indexOf("paragraphs")) type =   "paras";
+    else if (-1 != cmd.indexOf( "headings" )) type =  "header";
+    else if (-1 != cmd.indexOf(  "headers" )) type = "heading";
+    else if (-1 != cmd.indexOf(    "title" )) type =   "title";
+    else return felicity[ 0 ] +", "+ " i didn't hear a word like: buttons, values, links figures, paragraphs or headers.";
         
-        var widgets = [];
-        var elems;
-        switch (type) {
-            case "title":
-                var elem = document.getElementsByTagName( "title" );
-                response = elem.length == 0 ?
-                        felicity[ 0 ] +", "+ reply[ 1 ]
-                        : "the title of this page is: "+ elem[ 0 ].innerText;
-                break;
-            case "button":
-                elems = document.getElementsByTagName( "*" );
-                for (el of elems)
-                    if (el.tagName == "BUTTON") {
-                        if (!hidden( el ))
-                            widgets.push( articled( el.innerText.toLowerCase().trim()) +" "+type );
-                    } else if (el.tagName == "INPUT" && el.type == "button") {
-                        if (!hidden( el ))
-                            widgets.push( articled( el.title.toLowerCase().trim()) +" "+type );
-                    }
-                response = widgets.length == 0 ?
-                            felicity[ 0 ] +", "+ "there are no buttons."
-                            : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
-                break;
-            case "header":
-            case "heading":
-                // find level n
-                var levelIndex = cmd.indexOf( "level" );
-                var level = "1";
-                if (levelIndex != -1 && levelIndex+1 < cmd.length-1)
-                    level = toNumerics( cmd[ levelIndex + 1 ]);
-                elems = document.getElementsByTagName( "h"+ level );
-                for (el of elems)
-                    if(!hidden( el ))
-                        widgets.push( el.innerText );
-                response = widgets.length == 0 ?
-                        felicity[ 0 ] +", "+ "there don't appear to be any level "+ level +" "+ type +"s"
-                        : felicity[ 1 ] +", "+ "this page includes the level "+level+" "+ type +": "
-                                                    + widgets.join( " , and the level "+level+" "+ type +" " );
-                break;
-            case "paras":
-                elems = document.getElementsByTagName( "p" );
-                for (el of elems)
+    var elems;
+    switch (type) {
+        case "title":
+            var elem = document.getElementsByTagName( "title" );
+            response = elem.length == 0 ?
+                    reply[ 1 ]
+                    : "the title of this page is: "+ elem[ 0 ].innerText;
+            break;
+        case "button":
+            elems = document.getElementsByTagName( "*" );
+            for (el of elems)
+                if (el.tagName == "BUTTON") {
                     if (!hidden( el ))
-                        widgets.push( upto7words( el.innerText ));
-                response = widgets.length == 0 ?
-                        felicity[ 0 ] +", "+ "there don't appear to be any paragraphs"
-                        : felicity[ 1 ] +", "+ widgets.join( " , " );
-                break;
-            case "value":
-                elems = document.getElementsByTagName( "input" );
-                for (el of elems)
-                    if (el.type == "text" || el.type == "textarea")
-                        if (!hidden( el ) && "" != (name = attrValue( el, "placeholder" )))
-                            widgets.push( articled( name ) +" "+type );
-                response = widgets.length == 0 ?
-                            felicity[ 0 ] +", "+ "there are no values."
-                            : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
-                break;
-            case "figure":
-                elems = document.getElementsByTagName( "figcaption" );
-                for (el of elems)
+                        widgets.push( articled( el.innerText.toLowerCase().trim()) +" "+type );
+                } else if (el.tagName == "INPUT" && el.type == "button") {
                     if (!hidden( el ))
-                        widgets.push( articled( el.innerText.toLowerCase().trim()) );
-                response = widgets.length == 0 ?
-                            felicity[ 0 ] +", "+ "there are no figures."
-                            : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
-                break;
-            case "link":
-                elems = document.getElementsByTagName( "a" );
-                for (el of elems)
-                    if (!hidden( el )) {
-                        name = el.hasAttribute( "title" ) ?
-                               el.getAttribute( "title" ) :
-                               el.innerText.toLowerCase().trim();
-                        if (name != "")
-                            widgets.push( articled( name ) +" "+type );
-                    }
-                response = widgets.length == 0 ?
-                                felicity[ 0 ] +", "+ "there are no links."
-                                : felicity[ 1 ] + " , there is: " + widgets.join( " ; and, there is " );
-                break;
-            default : response = felicity[ 0 ] +", programming error: "+ type +" type is not supported.";
-    }   }
-	return response;
+                        widgets.push( articled( el.title.toLowerCase().trim()) +" "+type );
+                }
+            response = widgets.length == 0 ?
+                        "there are no buttons."
+                        : "there is: " + widgets.join( " ; and, there is " );
+            break;
+        case "header":
+        case "heading":
+            // find level n
+            var levelIndex = cmd.indexOf( "level" );
+            var level = "1";
+            if (levelIndex != -1 && levelIndex+1 < cmd.length-1)
+                level = toNumerics( cmd[ levelIndex + 1 ]);
+            elems = document.getElementsByTagName( "h"+ level );
+            for (el of elems)
+                if(!hidden( el ))
+                    widgets.push( el.innerText );
+            response = widgets.length == 0 ?
+                    "there don't appear to be any level "+ level +" "+ type +"s"
+                    : "this page includes the level "+level+" "+ type +": "
+                                                + widgets.join( " , and the level "+level+" "+ type +" " );
+            break;
+        case "paras":
+            elems = document.getElementsByTagName( "p" );
+            for (el of elems)
+                if (!hidden( el ))
+                    widgets.push( upto7words( el.innerText ));
+            response = widgets.length == 0 ?
+                    "there don't appear to be any paragraphs"
+                    : widgets.join( " , " );
+            break;
+        case "value":
+            elems = document.getElementsByTagName( "input" );
+            for (el of elems)
+                if (el.type == "text" || el.type == "textarea")
+                    if (!hidden( el ) && "" != (name = attrValue( el, "placeholder" )))
+                        widgets.push( articled( name ) +" "+type );
+            response = widgets.length == 0 ?
+                        "there are no values."
+                        : "there is: " + widgets.join( " ; and, there is " );
+            break;
+        case "checkboxes":
+            elems = document.getElementsByTagName( "input" );
+            for (el of elems)
+                if (el.type == "checkboxes")
+                    if (!hidden( el ) && "" != (name = labelValue( el )))
+                        widgets.push( articled( name ) +" "+type );
+            response = widgets.length == 0 ?
+                        "there are no checkboxes."
+                        : "there is a: " + widgets.join( " ; and, there is a " );
+            break;
+        case "radio":
+            elems = document.getElementsByTagName( "input" );
+            for (el of elems)
+                if (el.type == "radio")
+                    if (!hidden( el ) && "" != (name = labelValue( el )))
+                        widgets.push( articled( name ) +" "+type+" button " );
+            response = widgets.length == 0 ?
+                        "there are no radio buttons."
+                        : "there is a: " + widgets.join( " ; and, there is a " );
+            break;
+        case "figure":
+            elems = document.getElementsByTagName( "figcaption" );
+            for (el of elems)
+                if (!hidden( el ))
+                    widgets.push( articled( el.innerText.toLowerCase().trim()) );
+            response = widgets.length == 0 ?
+                        "there are no figures."
+                        : "there is: " + widgets.join( " ; and, there is " );
+            break;
+        case "link":
+            elems = document.getElementsByTagName( "a" );
+            for (el of elems)
+                if (!hidden( el )) {
+                    name = el.hasAttribute( "title" ) ?
+                            el.getAttribute( "title" ) :
+                            el.innerText.toLowerCase().trim();
+                    if (name != "")
+                        widgets.push( articled( name ) +" "+type );
+                }
+            response = widgets.length == 0 ?
+                            "there are no links."
+                            : "there is: " + widgets.join( " ; and, there is " );
+            break;
+        default : response = "programming error: "+ type +" type is not supported.";
+    }
+	return felicity[ widgets.length==0 ? 0:1 ] +", "+ response;
 }
 // ****************************************************************************
 // ****************************************************************************
