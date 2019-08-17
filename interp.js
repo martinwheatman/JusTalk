@@ -430,6 +430,7 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
         case "paragraphs" : elems = document.getElementsByTagName( "p" );      break;
         case "values"     : elems = document.getElementsByTagName( "input" );  break;
         case "checkboxes" : elems = document.getElementsByTagName( "input" );  break;
+        case "radio"      : elems = document.getElementsByTagName( "input" );  break;
         case "buttons"    : elems = document.getElementsByTagName( "*" );      break;
         case "links"      : elems = document.getElementsByTagName( "a" );      break;
         case "figures"    : elems = document.getElementsByTagName( "figure" ); break;
@@ -453,6 +454,12 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
             case "checkboxes" :
                 for (e of elems)
                     if (e.tagName == "INPUT" && e.type == "checkbox")
+                        if (!hidden( e ))
+                            number++;
+                break;
+            case "radio" :
+                for (e of elems)
+                    if (e.tagName == "INPUT" && e.type == "radio")
                         if (!hidden( e ))
                             number++;
                 break;
@@ -491,7 +498,8 @@ function what( cmd ) { // [what|list] .. [buttons|links|values|figures|paragraph
         response = felicity[ 0 ] +", radio buttons are not supported yet";
     else {
         var type = "", name;
-             if (-1 != cmd.indexOf(  "buttons" )) type = "button";
+             if (-1 != cmd.indexOf(    "radio" )) type =  "radio";
+        else if (-1 != cmd.indexOf(  "buttons" )) type = "button";
         else if (-1 != cmd.indexOf(   "values" )) type =  "value";
         else if (-1 != cmd.indexOf(    "links" )) type =   "link";
         else if (-1 != cmd.indexOf(  "figures" )) type = "figure";
