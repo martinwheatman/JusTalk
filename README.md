@@ -1,6 +1,6 @@
 # JusTalk - A Vocal Web Driver
 
-Just Talk is an *experimental* keyword interpreter which is directed at Web intereaction.
+JusTalk is an *experimental* keyword interpreter which is directed at Web intereaction.
 These keywords help the user invoke the actions of a browser.
 In keeping with speech act theory, there are informative replies to 
 reassure the user that the appropriate action has been performed.
