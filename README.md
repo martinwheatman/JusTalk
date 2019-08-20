@@ -42,7 +42,7 @@ Commands are given as verb-phrase string-literals, interspersed with noun-phrase
 So the comand to click on a button is currently described as:
 - click on X
 
-Where X is the 'name' of the button. Following the specification for clickable items, this is either the title, value, innerText or the 'submit' button.  Radio buttons and checkboxes are not supported yet.
+Where X is the 'name' of the button. Following the specification for clickable items, this is either the title, value, innerText, radio buttons, checkboxes or the 'submit' button.
 
 Similarly, the page reader included the commands:
 - read .. from X
@@ -65,4 +65,4 @@ If there's anyone out there in webland who knows a bit about manifests and can m
 this work on Firefox (etc.), please feel free to get in touch/fix. I *will* address this, but its not high priority.
 - you'll need to manually allow the microphone access to each page you visit. This pop-up seems to be inaccessible at the moment.
 - this is experimental in that the source code may change widely as the extension develops.
-- Radio buttons and checkboxes are still to be completed.
+- N.B. Radio buttons and checkboxes are now in this version, and should be available on the Chrome webstore when approved.
