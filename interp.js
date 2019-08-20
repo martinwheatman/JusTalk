@@ -53,6 +53,7 @@ chrome.runtime.onMessage.addListener(
 // ****************************************************************************
 // ****************************************************************************
 function includesWord( src, trg ) { // to stop 'male' matching 'female'
+    if (typeof src != "string" || typeof trg != "string") return false;
     src = " "+ src.toLowerCase();
     trg = " "+ trg.toLowerCase();
     return src.includes( trg );
@@ -370,13 +371,23 @@ function describeThePage() {
     return felicity[ 1 ] +", on this page there is "+
                     (response == "" ? "nothing" : response);
 }
+function attrValue( element, attr ) {
+    return element.hasAttribute( attr ) ? element.getAttribute( attr ).trim().toLowerCase() : "";
+}
+function labelValue( el ) {
+    return el.parentNode.nodeName=="LABEL" ? el.parentNode.innerText : el.value;
+}
 function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
 	var response = [];
 	var article = cmd[ 0 ]; cmd.shift();
 	var type = cmd[ cmd.length -1 ];
-	if (type == "link" || type == "button" || type == "value")
-		cmd.pop();
-	else
+	if (type == "checkbox" || type == "link" || type == "button" || type == "value") {
+        if (type == "button" && cmd[ cmd.length -2 ] == "radio") {
+            type = "radio";
+            cmd.pop();
+        }
+        cmd.pop();
+    } else
 		type = "value";
 	str = cmd.join(" ").toLowerCase();
 	var elements = document.getElementsByTagName( "*" );
@@ -391,19 +402,25 @@ function query ( cmd, imp ) { //is there [a|an].../do you have [a|an]...
          || (el.tagName == "INPUT" && (el.type == "text" || el.type == "textarea")
              && type == "value" &&
                  (includesWord(el.innerText, str )))
-				 )
-			return felicity[ 2 ] + " , "
+         || (el.tagName == "INPUT" && el.type == type    && includesWord( labelValue(el), str))
+		)   
+            return felicity[ 2 ] + " , "
 					+ (imp ? "there is " : "I have ")
-					+ article +" "+ str +" "+ type;
-        else if (((el.tagName == "BUTTON" ||
-                  (el.tagName == "INPUT" && el.type == "button"))
-                  && type == "link" &&
-					(includesWord( el.innerText, str )))
-			 ||  (el.tagName == "A" && type == "button" &&
-					(includesWord( el.title,     str ) ||
-					 includesWord( el.innerText, str )   )))
-			response.push( article +" "+ str +" "+ (type=="link"?"button":"link" ));		
-	}
+					+ article +" "+ str +" "+ (type == "radio"?"radio button":type);
+        else if (includesWord( el.title,       str ) ||
+				 includesWord( el.innerText,   str ) ||
+                 includesWord( labelValue(el), str))
+        {
+            if ((el.tagName == "BUTTON" ||
+                  (el.tagName == "INPUT" && el.type == "button")))
+                response.push( article +" "+ str +" button" );
+            else if (el.tagName == "A")
+                response.push( article +" "+ str +" link" );
+            else if (el.tagName == "INPUT" && el.type == "radio")
+                response.push( article +" "+ str +" radio button" );
+            else if (el.tagName == "INPUT" && el.type == "checkbox")
+                response.push( article +" "+ str +" checkbox" );
+    }   }
 	return felicity[ 3 ] + " , " + (response.length > 0 ?
                 (imp ? "but there is " : "but I have ") + response.join( " and " )
 				:  (imp ? "there is not " : "I don't have ")
@@ -476,12 +493,6 @@ function howMany( cmd ) { // how many [level n headings|X] [are there [on this p
     return number == 0 ? 
         felicity[ 0 ]+ ", there are no "+ name
         : felicity[ 1 ]+ ", there are "+ number +" "+ name;
-}
-function attrValue( element, attr ) {
-    return element.hasAttribute( attr ) ? element.getAttribute( attr ).trim().toLowerCase() : "";
-}
-function labelValue( el ) {
-    return el.parentNode.nodeName=="LABEL" ? el.parentNode.innerText : el.value;
 }
 function upto7words( str ) {
     var sa = str.split( " " );
