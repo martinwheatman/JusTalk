@@ -2,9 +2,9 @@
 
 JusTalk is an *experimental* keyword interpreter which is directed at Web intereaction.
 These keywords help the user invoke the actions of a browser.
-In keeping with speech act theory, there are informative replies to 
+In keeping with Speech Act Theory, there are felicitous, informative replies to 
 reassure the user that the appropriate action has been performed.
-In many ways is it like Tery Winograd's Blocks World program,
+In some ways is it like Terry Winograd's Blocks World program,
 [SHRDLU](https://en.wikipedia.org/wiki/SHRDLU), 
 but it interacts with a web page of widgets rather than a tray of blocks.
 Specifically, interaction is with the Document Object Model.
