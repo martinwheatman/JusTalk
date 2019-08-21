@@ -16,7 +16,7 @@ e.g. ignoring the header and footer code!
 
 ## To install:
 
-Go to the [Just Talk Chrome Extension webpage](https://chrome.google.com/webstore/search/enguage?h1=en), and add it to your browser.
+Go to the [JusTalk Chrome Extension webpage](https://chrome.google.com/webstore/search/enguage?h1=en), and add it to your browser.
 
 Because this may be out of date--it takes a few days for the upload to become visible--you may want [follow these instructions](https://youtu.be/6yZKteo1a2I):
 
