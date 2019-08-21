@@ -30,7 +30,7 @@ may be that you need [to unblock your microphone](https://www.youtube.com/watch?
 
 ## Use cases:
 
-- Ctrl-Space and say "Hello";
+- Ctrl-Space and say "Hello"; hit Crtl-Space again, for it to start listening!
 - [Navigating to a story on the BBC News website](https://www.youtube.com/watch?v=Q9PAZGEJe0E&t=2s);
 - [Using Google to find an article on Wikipedia](https://www.youtube.com/watch?v=yWuij7lBooQ);
 - Tweeting by voice, still trying!
