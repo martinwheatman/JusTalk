@@ -69,11 +69,11 @@ function clickClickMe() {
 		clickMe = null;
 }	}
 function clickOn( utt ) { // [click on] [the] X [button|link|checkbox|radio button]
-	if (utt.length == 0)
+    if (utt.length == 0)
 		return felicity[0] + ", "+ reply[ 0 ] +": click on ";
 	else {
-        var errMsg = utt.join( " " );
-	    var    the = "";
+        var orig = utt.join( " " );
+	    var  the = "";
 	    if (utt[ 0 ] == "the") {
 	        the = "the ";
 	        utt.shift();
@@ -88,12 +88,12 @@ function clickOn( utt ) { // [click on] [the] X [button|link|checkbox|radio butt
 		        links = document.getElementsByTagName( "a" );
 		        utt.pop();
 		    } else if (elemType == "button" ) {
-                if (typeAdj != "radio") {
+                if (typeAdj != "radio") 
 		            buttons = document.getElementsByTagName( "button" );
-                    utt.pop();
-                }
+                else
+                    utt.pop(); // remove radio
 		        inputBt = document.getElementsByTagName( "input" );
-		        utt.pop();
+		        utt.pop(); // remove button
 		    } else if (elemType == "checkbox" ) {
 		        inputBt = document.getElementsByTagName( "input" );
 		        labels  = document.getElementsByTagName( "label" );
@@ -104,9 +104,10 @@ function clickOn( utt ) { // [click on] [the] X [button|link|checkbox|radio butt
 		        inputBt = document.getElementsByTagName( "input" );
 		        links   = document.getElementsByTagName( "a" );
 		    }
-		    if (utt.length == 0)
-		    	return felicity[0] + ", "+ reply[ 0 ] +": click on "+ the + elemType;
-		    else {
+		    if (utt.length == 0) {
+                alert( "failing here?" );
+                return felicity[0] + ", "+ reply[ 0 ] +": click on "+ orig;
+		    } else {
                 utt = utt.join( " " ); // is now a string
 			    var clickable;
 			    var candidates = [];
@@ -144,7 +145,7 @@ function clickOn( utt ) { // [click on] [the] X [button|link|checkbox|radio butt
                 // just click on first found for the moment.        
                 switch (clickables.length) {
                     case 0:
-                        return felicity[0] + ", no clickable items match: "+ errMsg;
+                        return felicity[0] + ", no clickable items match: "+ orig;
                     default: //case 1:
                         clickMe = clickables[ 0 ];
                         setTimeout( clickClickMe, 1800 );
@@ -664,6 +665,33 @@ function scroll( down ) {
 // ****************************************************************************
 // ****************************************************************************
 // ****************************************************************************
+const britPhonetics = [ "alpha",   "bravo",  "charlie", "delta",  "echo",   "foxtrot",
+                        "hotel",   "golf",   "india",   "juliet", "kilo",   "lima",
+                        "mike",  "november", "oscar",   "romeo",  "sierra", "tango",
+                        "uniform", "victor", "whiskey", "xray",   "yankie", "zulu"
+                      ];
+function unspell( utt ) { // click on mail spelt mike alpha lima echo
+    var out = [];
+    for(i=0; i<utt.length; i++)
+        if (i<utt.length-1 && utt[ i ] == "spelt") {
+            var chars = [];
+            while (britPhonetics.includes( utt[ ++i ]))
+                chars.push( utt[ i ].charAt( 0 )); // push the first character of e.g. india.
+            var word = chars.join("");
+            if (word != "") {
+                out.pop(); // remove old word, forget spelt
+                out.push( word );
+            } else
+                out.push( "spelt" ); // spelt isn't pushed
+            out.push( utt[ i ]); // both cases push the current, nonphonetic word
+        } else // */
+            out.push( utt[ i ]);
+    return out;
+}
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
+// ****************************************************************************
 function interp( utterance ) {
         
     var response = felicity[0] +", "+ reply[ 0 ] +": "+ utterance;
@@ -672,10 +700,12 @@ function interp( utterance ) {
 
     for (i=0; i<cmds.length; i++) {
         
-        cmds[i]=cmds[i].trim();
+        cmds[i]=cmds[i].trim().toLowerCase();
         cmd=cmds[i].split( " " );
         while (cmd.length > 0 && felicity.includes( cmd[ 0 ] )) 
             cmd.shift();
+
+        cmd = unspell( cmd );
         
         // Basic Interpretation...
         if (cmd.length == 0)
@@ -764,7 +794,7 @@ function interp( utterance ) {
 
         // default error response:
         } else
-            response = felicity[0] + ", "+ reply[ 0 ] +" "+ cmds[i];
+            response = felicity[0] + ", "+ reply[ 0 ] +", "+ cmd.join( " " );;
 
         if (response.startsWith( felicity[ 0 ] + "," )) break;
     }
