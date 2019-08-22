@@ -1,20 +1,31 @@
 # JusTalk - A Vocal Web Driver
 
-JusTalk is an *experimental* keyword interpreter which is directed at Web intereaction.
-These keywords help the user invoke the actions of a browser.
+JusTalk is an *experimental* keyword interpreter, directed at Web interaction.
+These keywords drive the actions of a browser.
 In keeping with Speech Act Theory, there are felicitous, informative replies to 
 reassure the user that the appropriate action has been performed.
-In some ways is it like Terry Winograd's Blocks World program,
+It is like a Blocks World program,
 [SHRDLU](https://en.wikipedia.org/wiki/SHRDLU), 
-but it interacts with a web page of widgets rather than a tray of blocks.
-Specifically, interaction is with the Document Object Model.
-This means that it is not necessarily interacting with the web page HTML, 
-but with the document as built.
+but interacting with a webpage-of-widgets, rather than a tray-of-blocks.
+Specifically, interaction is with the Document Object Model,
+you are not interacting with the webpage HTML, 
+but with the live document.
 Much of the code, therefore, is aimed at working around the document as injected 
 by the web page, and by the visual elements of layout:
 e.g. ignoring the header and footer code!
 
-## To install:
+## Latest!
+Phonetic spelling, e.g.: click on mail spelt mike alpha lima echo radio button
+
+Because we have no power over what the speech-to-text software is going to hear,
+we need to be able to specify what spelling we want. This currently uses the British phonetic alphabet:
+
+                        "alpha",   "bravo",  "charlie", "delta",  "echo",   "foxtrot",
+                        "hotel",   "golf",   "india",   "juliet", "kilo",   "lima",
+                        "mike",  "november", "oscar",   "romeo",  "sierra", "tango",
+                        "uniform", "victor", "whiskey", "xray",   "yankie", "zulu"
+
+## To install JusTalk:
 
 Go to the [JusTalk Chrome Extension webpage](https://chrome.google.com/webstore/search/enguage?h1=en), and add it to your browser.
 
