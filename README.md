@@ -15,7 +15,7 @@ by the web page, and by the visual elements of layout:
 e.g. ignoring the header and footer code!
 
 ## Latest!
-Phonetic spelling, e.g.: click on mail spelt mike alpha lima echo radio button
+Phonetic spelling, e.g.: click on the mail spelt mike alpha lima echo radio button
 
 Because we have no power over what the speech-to-text software is going to hear,
 we need to be able to specify what spelling we want. The phonetic alphabet is:
