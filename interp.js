@@ -665,26 +665,30 @@ function scroll( down ) {
 // ****************************************************************************
 // ****************************************************************************
 // ****************************************************************************
-const britPhonetics = [ "alpha",   "bravo",  "charlie", "delta",  "echo",   "foxtrot",
-                        "hotel",   "golf",   "india",   "juliet", "kilo",   "lima",
-                        "mike",  "november", "oscar",   "romeo",  "sierra", "tango",
-                        "uniform", "victor", "whiskey", "xray",   "yankie", "zulu"
-                      ];
+const phonetics = [ "alpha",   "bravo",    "charlie", "delta",  "echo",   "foxtrot",
+                    "hotel",   "golf",     "india",   "juliet", "kilo",   "lima",
+                    "mike",    "november", "oscar",   "papa",   "quebec", "romeo", 
+                    "sierra", "tango",     "uniform", "victor", "whiskey", "x-ray",
+                    "yankie", "zulu" ];
 function unspell( utt ) { // click on mail spelt mike alpha lima echo
     var out = [];
     for(i=0; i<utt.length; i++)
         if (i<utt.length-1 && utt[ i ] == "spelt") {
-            var chars = [];
-            while (britPhonetics.includes( utt[ ++i ]))
-                chars.push( utt[ i ].charAt( 0 )); // push the first character of e.g. india.
-            var word = chars.join("");
-            if (word != "") {
-                out.pop(); // remove old word, forget spelt
-                out.push( word );
-            } else
-                out.push( "spelt" ); // spelt isn't pushed
-            out.push( utt[ i ]); // both cases push the current, nonphonetic word
-        } else // */
+            if (utt[ 1+i ] == "spelt") // we've 'spelt spelt', treat as 'spelt'
+                out.push( utt[ ++i ]);
+            else {
+                var chars = [];
+                while (phonetics.includes( utt[ ++i ]))
+                    chars.push( utt[ i ].charAt( 0 )); // push the first character of e.g. india.
+                var word = chars.join("");
+                if (word != "") {
+                    out.pop(); // remove mis-spelt word...
+                    out.push( word ); // ...forgetting 'spelt', push spelt word
+                } else
+                    out.push( "spelt" ); // spelt isn't pushed
+                out.push( utt[ i ]); // both cases push the current (nonphonetic) word
+            }
+        } else
             out.push( utt[ i ]);
     return out;
 }
