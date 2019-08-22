@@ -18,12 +18,13 @@ e.g. ignoring the header and footer code!
 Phonetic spelling, e.g.: click on mail spelt mike alpha lima echo radio button
 
 Because we have no power over what the speech-to-text software is going to hear,
-we need to be able to specify what spelling we want. This currently uses the British phonetic alphabet:
+we need to be able to specify what spelling we want. The phonetic alphabet is:
 
-                        "alpha",   "bravo",  "charlie", "delta",  "echo",   "foxtrot",
-                        "hotel",   "golf",   "india",   "juliet", "kilo",   "lima",
-                        "mike",  "november", "oscar",   "romeo",  "sierra", "tango",
-                        "uniform", "victor", "whiskey", "xray",   "yankie", "zulu"
+                        "alpha",  "bravo",    "charlie", "delta",  "echo",   "foxtrot",
+                        "hotel",  "golf",     "india",   "juliet", "kilo",    "lima",
+                        "mike",   "november", "oscar",   "papa",   "quebec",  "romeo", 
+                        "sierra", "tango",    "uniform", "victor", "whiskey", "xray",
+                        "yankie", "zulu"
 
 ## To install JusTalk:
 
