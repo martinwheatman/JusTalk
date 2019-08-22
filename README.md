@@ -15,7 +15,7 @@ by the web page, and by the visual elements of layout:
 e.g. ignoring the header and footer code!
 
 ## Latest!
-Phonetic spelling, e.g.: click on the mail spelt mike alpha lima echo radio button
+Now includes phonetic spelling, e.g.: click on the mail spelt mike alpha lima echo radio button
 
 Because we have no power over what the speech-to-text software is going to hear,
 we need to be able to specify what spelling we want. The phonetic alphabet is:
@@ -23,7 +23,7 @@ we need to be able to specify what spelling we want. The phonetic alphabet is:
                         "alpha",  "bravo",    "charlie", "delta",  "echo",   "foxtrot",
                         "hotel",  "golf",     "india",   "juliet", "kilo",    "lima",
                         "mike",   "november", "oscar",   "papa",   "quebec",  "romeo", 
-                        "sierra", "tango",    "uniform", "victor", "whiskey", "xray",
+                        "sierra", "tango",    "uniform", "victor", "whiskey", "x-ray",
                         "yankie", "zulu"
 
 ## To install JusTalk:
@@ -51,10 +51,10 @@ may be that you need [to unblock your microphone](https://www.youtube.com/watch?
 ## Command details
 
 Commands are given as verb-phrase string-literals, interspersed with noun-phrase variables.
-So the comand to click on a button is currently described as:
+So the comand to click on a button, radio button or checkbox is currently described as:
 - click on X
 
-Where X is the 'name' of the button. Following the specification for clickable items, this is either the title, value, innerText, radio buttons, checkboxes or the 'submit' button.
+Where X is the 'name' of the button, or label of the radio button or checkbox. Following the specification for clickable items, this is either the title, value, innerText, radio buttons, checkboxes or the 'submit' button.
 
 Similarly, the page reader included the commands:
 - read .. from X
