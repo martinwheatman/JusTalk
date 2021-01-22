@@ -1,8 +1,8 @@
 { "name": "Let's JusTalk to the Web",
   "short_name" : "JusTalk",
   "description": "A vocal Web interface. Press Ctrl+space and say, 'Hello'",
-  "version": "0.98.4",
-  "manifest_version": 2,
+  "version": "0.98.5",
+  "manifest_version": 3,
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "background": {
     "scripts": ["kbTx.js"],
