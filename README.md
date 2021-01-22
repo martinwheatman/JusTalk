@@ -18,7 +18,5 @@ Informative replies reassure the user that the appropriate action has been perfo
 ## Notes
 - You'll need Chrome for the moment, I'm afraid.
 If there's anyone out there in webland who knows a bit about manifests and can make 
-this work on Firefox (etc.), please feel free to get in touch/fix. I *will* address this, but its not high priority.
-- you'll need to manually allow the microphone access to each page you visit. This pop-up seems to be inaccessible at the moment.
-- this is experimental in that the source code may change widely as the extension develops.
-- N.B. Radio buttons and checkboxes are now in this version, and should be available on the Chrome webstore when approved.
+this work on Firefox (etc.), please feel free to get in touch/fix.
+- you may need to manually allow the microphone access to each page you visit.
