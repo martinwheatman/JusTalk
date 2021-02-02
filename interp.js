@@ -26,22 +26,22 @@ function speakToMe( reply ) {
     )   );
 }
 
-function ajaxEnguage( utterance, reply ) {
-    var request='/Enguage?utterance='+ utterance;
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (    this.readyState == 4
-            &&  this.status     == 200
-            && !this.responseText.startsWith( felicity[ 0 ], 0 ))
-        {
-            speakToMe( this.responseText );
-        } else if (this.readyState == 4) {
-            speakToMe( reply ); // original reply
-        }
-    };
-    xhttp.open('GET', request, true);
-    xhttp.send();
-}
+// function ajaxEnguage( utterance, reply ) {
+//     var request='/Enguage?utterance='+ utterance;
+//     var xhttp = new XMLHttpRequest();
+//     xhttp.onreadystatechange = function() {
+//         if (    this.readyState == 4
+//             &&  this.status     == 200
+//             && !this.responseText.startsWith( felicity[ 0 ], 0 ))
+//         {
+//             speakToMe( this.responseText );
+//         } else if (this.readyState == 4) {
+//             speakToMe( reply ); // original reply
+//         }
+//     };
+//     xhttp.open('GET', request, true);
+//     xhttp.send();
+// }
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
@@ -68,10 +68,10 @@ chrome.runtime.onMessage.addListener(
 
                 else {
                     reply = interp( utterance );
-                    if (reply.startsWith( felicity[ 0 ], 0 ))
-                        ajaxEnguage( utterance, reply );
-                    else
-                        speakToMe( reply );
+                    // if (reply.startsWith( felicity[ 0 ], 0 ))
+                    //     ajaxEnguage( utterance, reply );
+                    // else
+                    speakToMe( reply );
                 }
     }	}   }
 );
